@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Career Journey — SOMOS.tech</title>
+<meta name="description" content="Your career journey map — from AI Career Discovery to landing the role, tracked as one living path.">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="brand">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#22E2A0" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="6"></rect><path d="M8 12l2.5 2.5L16 9" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    SOMOS.tech
+  </div>
+  <div class="nav-links">
+    <a href="#">Home</a>
+    <a href="#">Community</a>
+    <a href="#" aria-current="page">Programs</a>
+    <a href="#">Career</a>
+    <a href="#">About</a>
+  </div>
+  <div class="nav-cta">
+    <span class="concept-pill">CONCEPT</span>
+  </div>
+</nav>
+
+<div class="switcher" role="navigation" aria-label="Career Journey screens">
+  <a href="index.html" aria-current="page">Map</a>
+  <span class="is-locked" data-coming-soon="AI Career Discovery">Discovery</span>
+  <span class="is-locked" data-coming-soon="Explore &amp; Compare Paths">Compare</span>
+  <span class="is-locked" data-coming-soon="My Career Journey">My Journey</span>
+  <span class="is-locked" data-coming-soon="Living Roadmap">Roadmap</span>
+  <span class="is-locked" data-coming-soon="Prepare">Prepare</span>
+  <span class="is-locked" data-coming-soon="Practice">Practice</span>
+  <span class="is-locked" data-coming-soon="Apply">Apply</span>
+</div>
+
+<header class="hero">
+  <span class="eyebrow">CONCEPT &middot; CAREER JOURNEY</span>
+  <h1>Your path into tech,<br><span class="accent">mapped out.</span></h1>
+  <p>Scroll to follow how one conversation becomes a role, a roadmap, and eventually, a job. Teal means real progress. Dashed means it's still ahead of you.</p>
+  <div class="hero-legend">
+    <span><i class="legend-dot legend-dot--done"></i>Completed</span>
+    <span><i class="legend-dot legend-dot--now"></i>You are here</span>
+    <span><i class="legend-dot legend-dot--locked"></i>Coming up</span>
+  </div>
+  <div class="scroll-cue" id="scrollCue">
+    <span>Scroll to explore</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+  </div>
+</header>
+
+<main class="map">
+
+  <!-- 1: AI Career Discovery — done -->
+  <div class="stage" data-stage>
+    <div class="stage-label">Understand me</div>
+    <button type="button" class="node node--done" data-coming-soon="AI Career Discovery" aria-label="Completed: AI Career Discovery">
+      <div class="node-row">
+        <span class="node-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg></span>
+        <span class="node-title">AI Career Discovery</span>
+      </div>
+      <div class="node-desc">A real conversation, not a 4-question quiz — so results are explainable.</div>
+    </button>
+  </div>
+  <div class="connector connector--solid" data-connector></div>
+
+  <!-- 2: Explore & Compare — done -->
+  <div class="stage" data-stage>
+    <div class="stage-label">Explore</div>
+    <button type="button" class="node node--done" data-coming-soon="Explore &amp; Compare Paths" aria-label="Completed: Explore and Compare Paths">
+      <div class="node-row">
+        <span class="node-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg></span>
+        <span class="node-title">Explore &amp; Compare Paths</span>
+      </div>
+      <div class="node-desc">See 2&ndash;3 roles side by side &mdash; and push back if a match feels off.</div>
+    </button>
+  </div>
+  <div class="connector connector--solid" data-connector></div>
+
+  <!-- 3: Choose Your Goal — done -->
+  <div class="stage" data-stage>
+    <div class="stage-label">Commit</div>
+    <button type="button" class="node node--done" data-coming-soon="Explore &amp; Compare Paths" aria-label="Completed: Choose Your Goal, Product Operations Manager">
+      <div class="node-row">
+        <span class="node-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg></span>
+        <span class="node-title">Choose Your Goal</span>
+        <span class="node-meta">Product Operations Manager</span>
+      </div>
+      <div class="node-desc">Unlocks your personalized roadmap &mdash; nothing before this was locked in.</div>
+    </button>
+  </div>
+  <div class="connector connector--solid" data-connector></div>
+
+  <!-- 4: My Career Journey — current -->
+  <div class="stage" data-stage>
+    <div class="stage-label is-current">Your journey</div>
+    <button type="button" class="node node--current" data-coming-soon="My Career Journey" aria-label="Current step: My Career Journey, 42 percent complete">
+      <span class="pulse-ring" data-pulse></span>
+      <span class="here-tag"><span class="pulse-dot"></span>You are here</span>
+      <div class="node-row">
+        <span class="node-title">My Career Journey</span>
+        <span class="readiness">42%</span>
+      </div>
+      <div class="node-desc" style="margin-left:0; margin-top:6px;">Your home base &mdash; Learn, Build and Connect tracked together, not as separate to-do lists.</div>
+    </button>
+  </div>
+
+  <div class="fork-wrap">
+    <div class="fork-bar" aria-hidden="true">
+      <svg viewBox="0 0 880 40" preserveAspectRatio="none">
+        <path d="M 440 0 L 440 8 L 146 8 L 146 40" data-fork-path/>
+        <path d="M 440 0 L 440 40" data-fork-path/>
+        <path d="M 440 0 L 440 8 L 734 8 L 734 40" data-fork-path/>
+      </svg>
+    </div>
+
+    <div class="fork-grid">
+      <!-- Learn -->
+      <div class="fork-card" data-fork-card>
+        <div class="fork-card-head">
+          <span class="fork-card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></span>
+          <span class="fork-card-title">Learn</span>
+          <span class="fork-card-pct">20%</span>
+        </div>
+        <div class="fork-bar-track"><div class="fork-bar-fill" data-fill="20"></div></div>
+        <div class="fork-card-items">Courses &middot; Skills &middot; Certs</div>
+        <div class="fork-card-note">Tracked with why each one matters, not just a checkbox.</div>
+      </div>
+      <!-- Build -->
+      <div class="fork-card" data-fork-card>
+        <div class="fork-card-head">
+          <span class="fork-card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94z"></path></svg></span>
+          <span class="fork-card-title">Build</span>
+          <span class="fork-card-pct">0%</span>
+        </div>
+        <div class="fork-bar-track"><div class="fork-bar-fill" data-fill="0"></div></div>
+        <div class="fork-card-items">Labs &middot; Projects &middot; Volunteer</div>
+        <div class="fork-card-note">Hands-on proof &mdash; what employers actually ask about.</div>
+      </div>
+      <!-- Connect -->
+      <div class="fork-card" data-fork-card>
+        <div class="fork-card-head">
+          <span class="fork-card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg></span>
+          <span class="fork-card-title">Connect</span>
+          <span class="fork-card-pct">25%</span>
+        </div>
+        <div class="fork-bar-track"><div class="fork-bar-fill" data-fill="25"></div></div>
+        <div class="fork-card-items">Community &middot; Mentor &middot; Events</div>
+        <div class="fork-card-note">Tailored to your target role, not generic advice.</div>
+      </div>
+    </div>
+
+    <div class="merge-bar" aria-hidden="true">
+      <svg viewBox="0 0 880 40" preserveAspectRatio="none">
+        <path d="M 146 0 L 146 20 L 440 20 L 440 40" data-merge-path/>
+        <path d="M 440 0 L 440 40" data-merge-path/>
+        <path d="M 734 0 L 734 20 L 440 20 L 440 40" data-merge-path/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="connector connector--dashed" data-connector></div>
+
+  <!-- Prepare — locked -->
+  <div class="stage" data-stage>
+    <button type="button" class="node node--locked" data-coming-soon="Prepare" aria-label="Coming up: Prepare, resume and LinkedIn">
+      <div class="node-row">
+        <span class="node-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="10" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
+        <span class="node-title">Prepare</span>
+        <span class="node-meta">Resume &middot; LinkedIn</span>
+        <svg class="lock-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="10" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+      </div>
+      <div class="node-desc">AI writes from what you've actually done, not a template.</div>
+    </button>
+  </div>
+  <div class="connector connector--dashed" data-connector></div>
+
+  <!-- Practice — locked -->
+  <div class="stage" data-stage>
+    <button type="button" class="node node--locked" data-coming-soon="Practice" aria-label="Coming up: Practice, mock interviews">
+      <div class="node-row">
+        <span class="node-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path></svg></span>
+        <span class="node-title">Practice</span>
+        <span class="node-meta">Mock Interviews</span>
+        <svg class="lock-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="10" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+      </div>
+      <div class="node-desc">Personalized prep, handed off to SOMOS's Mock Interview program.</div>
+    </button>
+  </div>
+  <div class="connector connector--dashed" data-connector></div>
+
+  <!-- Apply — locked -->
+  <div class="stage" data-stage>
+    <button type="button" class="node node--locked" data-coming-soon="Apply" aria-label="Coming up: Apply, job boards and tracker">
+      <div class="node-row">
+        <span class="node-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 2L11 13"></path><path d="M22 2l-7 20-4-9-9-4 20-7z"></path></svg></span>
+        <span class="node-title">Apply</span>
+        <span class="node-meta">Job boards &middot; tracker</span>
+        <svg class="lock-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="10" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+      </div>
+      <div class="node-desc">Curated boards and tips, tailored to your target role.</div>
+    </button>
+  </div>
+  <div class="connector connector--dashed" data-connector></div>
+
+  <!-- Land the Role — reward -->
+  <div class="stage" data-stage>
+    <button type="button" class="node node--reward" data-coming-soon="Apply" aria-label="Coming up: Land the Role badge">
+      <div class="node-row">
+        <span class="node-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M8 21h8"></path><path d="M12 17v4"></path><path d="M7 4h10v5a5 5 0 0 1-10 0V4z"></path><path d="M7 6H4a2 2 0 0 0 2 4"></path><path d="M17 6h3a2 2 0 0 1-2 4"></path></svg></span>
+        <span class="node-title">Land the Role</span>
+      </div>
+      <div class="node-desc">A badge that means something &mdash; tied to what you did, not pages you visited.</div>
+    </button>
+  </div>
+
+</main>
+
+<footer class="map-footer">
+  SOMOS.tech &middot; Career Journey &mdash; concept prototype, not final product
+</footer>
+
+<button class="feedback-btn" type="button" id="feedbackBtn">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F0A947" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"></path></svg>
+  Feedback
+</button>
+
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
