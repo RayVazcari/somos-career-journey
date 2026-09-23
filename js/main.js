@@ -158,7 +158,9 @@
   });
 
   /* ------------------------------------------------------------------
-     Fork / merge branch bars — SVG path draw
+     Fork branch bar — SVG path draw (the merge bar was removed in
+     favor of a single plain connector below the fork, so there's
+     only one branching bar left to animate now)
      ------------------------------------------------------------------ */
   function drawPaths(selector, triggerEl) {
     var paths = gsap.utils.toArray(selector);
@@ -177,9 +179,7 @@
   }
 
   var forkBar = document.querySelector(".fork-bar");
-  var mergeBar = document.querySelector(".merge-bar");
   if (forkBar) drawPaths("[data-fork-path]", forkBar);
-  if (mergeBar) drawPaths("[data-merge-path]", mergeBar);
 
   /* ------------------------------------------------------------------
      Fork cards — staggered pop-in reveal + progress bar fill
