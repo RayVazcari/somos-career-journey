@@ -22,6 +22,28 @@
   var trackedStages = document.querySelectorAll("[data-pct]");
   trackedStages.forEach(applyLabel);
 
+  /* "My Career Journey" shows its OWN number — the average of just its
+     three direct children (Learn/Build/Connect) — which is a different,
+     narrower figure than the whole-path average above. It's computed
+     from data-pct on the matching [data-track] cards, not hardcoded, so
+     it can't drift out of sync with them either. */
+  var trackValues = {};
+  document.querySelectorAll("[data-track]").forEach(function (el) {
+    trackValues[el.getAttribute("data-track")] = Number(el.getAttribute("data-pct"));
+  });
+  document.querySelectorAll("[data-pct-of]").forEach(function (el) {
+    var keys = el.getAttribute("data-pct-of").split(",");
+    var vals = keys
+      .map(function (k) { return trackValues[k.trim()]; })
+      .filter(function (v) { return v !== undefined; });
+    if (!vals.length) return;
+    var avg = Math.round(vals.reduce(function (a, b) { return a + b; }, 0) / vals.length);
+    var label = el.querySelector(".pct-label");
+    if (label) label.textContent = avg + "%";
+    var fill = el.querySelector(".pct-fill");
+    if (fill) fill.dataset.target = avg;
+  });
+
   var overall = 0;
   if (trackedStages.length) {
     var sum = 0;
@@ -118,7 +140,10 @@
      Connector draw — the spine fills in as it scrolls into view
      ------------------------------------------------------------------ */
   var connectors = gsap.utils.toArray("[data-connector]");
-  connectors.forEach(function (line) {
+  connectors.forEach(function (line, i) {
+    // stagger the ambient travel-pulse so the whole path feels like it's
+    // flowing, rather than every segment blinking in lockstep
+    line.style.setProperty("--travel-delay", (i * 0.18) + "s");
     gsap.to(line, {
       scaleY: 1,
       duration: reduceMotion ? 0.01 : 0.55,

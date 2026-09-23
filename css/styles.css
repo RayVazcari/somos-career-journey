@@ -369,14 +369,16 @@ svg { display: block; }
   line-height: 1.4;
 }
 
-/* connector — the "drawing" line between nodes. Hover it (or tab to
-   it) and it lights up with a traveling pulse — a wider invisible
-   hit zone (::before) makes that easy to trigger with the mouse. */
+/* connector — the "drawing" line between nodes. A small light pulse
+   travels down it continuously (staggered per connector so the whole
+   path feels alive, not synchronized); hover brightens the line and
+   speeds the pulse up. A wider invisible hit zone (::before) makes
+   hover easy to trigger even though the visible line is only 3px. */
 .connector {
   position: relative;
   width: 3px;
   height: 44px;
-  margin: 2px 0;
+  margin: 10px 0;
   border-radius: 2px;
   flex-shrink: 0;
   transform: scaleY(0);
@@ -399,41 +401,42 @@ svg { display: block; }
   position: absolute;
   left: 50%;
   top: 0;
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 999px;
   transform: translate(-50%, -50%);
   background: var(--teal);
-  box-shadow: 0 0 12px 3px var(--teal-glow);
+  box-shadow: 0 0 10px 2px var(--teal-glow);
   opacity: 0;
+  animation: connector-travel 2s linear infinite;
+  animation-delay: var(--travel-delay, 0s);
+}
+
+.connector:hover::after {
+  transform: translate(-50%, -50%) scale(1.35);
+  animation-duration: 0.9s;
 }
 
 .connector--solid { background: linear-gradient(var(--teal), var(--teal-dark)); }
 .connector--solid:hover { filter: brightness(1.35) drop-shadow(0 0 6px var(--teal-glow)); }
-.connector--solid:hover::after { animation: connector-travel 1s linear infinite; }
 
 .connector--dashed {
   background-image: linear-gradient(var(--border-strong) 55%, transparent 0%);
   background-size: 3px 10px;
   background-repeat: repeat-y;
 }
-.connector--dashed::after { background: var(--text-2); box-shadow: 0 0 10px 2px rgba(168, 187, 200, 0.5); }
+.connector--dashed::after { background: var(--text-2); box-shadow: 0 0 8px 2px rgba(168, 187, 200, 0.5); }
 .connector--dashed:hover { filter: brightness(1.6); }
-.connector--dashed:hover::after { animation: connector-travel 1.1s linear infinite; }
 
 @keyframes connector-travel {
   0%   { top: 0%;   opacity: 0; }
-  15%  { opacity: 1; }
-  85%  { opacity: 1; }
+  15%  { opacity: 0.9; }
+  85%  { opacity: 0.9; }
   100% { top: 100%; opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .connector--solid:hover::after,
-  .connector--dashed:hover::after {
-    animation: none;
-    opacity: 0;
-  }
+  .connector::after { animation: none; opacity: 0; }
 }
 
 @media (max-width: 640px) {
@@ -671,7 +674,7 @@ svg { display: block; }
 .fork-bar {
   position: relative;
   width: 100%;
-  height: 40px;
+  height: 52px;
   display: none;
 }
 
@@ -766,7 +769,8 @@ svg { display: block; }
 .merge-bar {
   position: relative;
   width: 100%;
-  height: 40px;
+  height: 52px;
+  margin-top: 14px;
   display: none;
 }
 .merge-bar svg { width: 100%; height: 100%; overflow: visible; }
