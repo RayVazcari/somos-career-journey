@@ -22,11 +22,12 @@
   var trackedStages = document.querySelectorAll("[data-pct]");
   trackedStages.forEach(applyLabel);
 
-  /* "My Career Journey" shows its OWN number — the average of just its
-     three direct children (Learn/Build/Connect) — which is a different,
+  /* "My Career Journey" shows its OWN number — the sum of its three
+     direct children (Learn + Build + Connect) — which is a different,
      narrower figure than the whole-path average above. It's computed
      from data-pct on the matching [data-track] cards, not hardcoded, so
-     it can't drift out of sync with them either. */
+     it can't drift out of sync with them either. Clamped at 100 so a
+     later state where the tracks add past 100 still displays sanely. */
   var trackValues = {};
   document.querySelectorAll("[data-track]").forEach(function (el) {
     trackValues[el.getAttribute("data-track")] = Number(el.getAttribute("data-pct"));
@@ -37,11 +38,11 @@
       .map(function (k) { return trackValues[k.trim()]; })
       .filter(function (v) { return v !== undefined; });
     if (!vals.length) return;
-    var avg = Math.round(vals.reduce(function (a, b) { return a + b; }, 0) / vals.length);
+    var total = Math.min(100, vals.reduce(function (a, b) { return a + b; }, 0));
     var label = el.querySelector(".pct-label");
-    if (label) label.textContent = avg + "%";
+    if (label) label.textContent = total + "%";
     var fill = el.querySelector(".pct-fill");
-    if (fill) fill.dataset.target = avg;
+    if (fill) fill.dataset.target = total;
   });
 
   var overall = 0;

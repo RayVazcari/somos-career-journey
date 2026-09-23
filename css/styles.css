@@ -328,6 +328,7 @@ svg { display: block; }
 .path-summary {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 18px;
   width: 100%;
   max-width: var(--container);
@@ -335,7 +336,7 @@ svg { display: block; }
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-lg);
   padding: 18px 24px;
-  margin-bottom: 32px;
+  margin: 0 auto 32px;
 }
 
 .path-summary-ring { flex-shrink: 0; }
@@ -347,7 +348,7 @@ svg { display: block; }
   .path-summary-ring circle[data-ring-fill] { transition: none; }
 }
 
-.path-summary-text { min-width: 0; }
+.path-summary-text { min-width: 0; text-align: left; }
 
 .path-summary-value {
   font-size: 24px;
@@ -675,6 +676,7 @@ svg { display: block; }
   position: relative;
   width: 100%;
   height: 52px;
+  margin-bottom: 12px;
   display: none;
 }
 
@@ -690,6 +692,56 @@ svg { display: block; }
 
 @media (min-width: 768px) {
   .fork-bar { display: block; }
+}
+
+/* traveling pulse overlaid on the fork/merge branch paths — same
+   ambient language as the vertical connectors, just following an
+   SVG path instead of a straight CSS line. Two variants because the
+   trunk segment (~40 units) and the branch segments (~330 units) are
+   very different lengths — a single dash pattern would either vanish
+   on the short one or crawl on the long one. */
+/* qualified with .fork-wrap so these beat the plain ".fork-bar path" /
+   ".merge-bar path" structural rules, which are a type+class selector
+   and would otherwise win on specificity and silently strip these
+   dasharray/animation declarations regardless of source order */
+.fork-wrap path.path-pulse {
+  fill: none;
+  stroke: var(--teal);
+  stroke-width: 3;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 4px var(--teal-glow));
+  animation-delay: var(--pulse-delay, 0s);
+}
+
+.fork-wrap path.path-pulse--muted {
+  stroke: var(--text-2);
+  filter: drop-shadow(0 0 3px rgba(168, 187, 200, 0.5));
+}
+
+.fork-wrap path.path-pulse--branch {
+  stroke-dasharray: 14 340;
+  animation: path-travel-branch 2.2s linear infinite;
+  animation-delay: var(--pulse-delay, 0s);
+}
+
+.fork-wrap path.path-pulse--trunk {
+  stroke-dasharray: 6 40;
+  animation: path-travel-trunk 1s linear infinite;
+  animation-delay: var(--pulse-delay, 0s);
+}
+
+@keyframes path-travel-branch {
+  from { stroke-dashoffset: 354; }
+  to   { stroke-dashoffset: 0; }
+}
+
+@keyframes path-travel-trunk {
+  from { stroke-dashoffset: 46; }
+  to   { stroke-dashoffset: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fork-wrap path.path-pulse { animation: none; opacity: 0; }
 }
 
 .fork-grid {
