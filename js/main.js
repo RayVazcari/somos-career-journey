@@ -29,12 +29,22 @@
     overall = Math.round(sum / trackedStages.length);
   }
 
-  var overallNode = document.querySelector("[data-overall]");
-  if (overallNode) {
-    var overallLabel = overallNode.querySelector("[data-overall-label]");
-    if (overallLabel) overallLabel.textContent = overall + "%";
-    var overallFill = overallNode.querySelector(".pct-fill");
-    if (overallFill) overallFill.dataset.target = overall;
+  /* Overall path progress lives in its own standalone widget (.path-summary),
+     never inside a stage card — keeping it physically separate is what
+     stops it from being misread as any one stage's own number. */
+  var overallLabel = document.querySelector("[data-overall-label]");
+  if (overallLabel) overallLabel.textContent = overall + "%";
+
+  var ring = document.querySelector("[data-ring-fill]");
+  if (ring) {
+    var circumference = 2 * Math.PI * 25; // matches r="25" in the SVG
+    var offset = circumference * (1 - overall / 100);
+    // rAF so the transition (not the initial paint) carries the motion
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        ring.style.strokeDashoffset = String(offset);
+      });
+    });
   }
 
   function fillOnEnter(el) {

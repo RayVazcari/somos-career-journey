@@ -322,8 +322,58 @@ svg { display: block; }
 
 .stage-label.is-current { color: var(--teal); }
 
-/* connector — the "drawing" line between nodes */
+/* Overall path progress — a standalone trailhead marker, deliberately
+   NOT attached to any single stage card, so it can never be misread
+   as "My Career Journey"'s own number. */
+.path-summary {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  max-width: var(--container);
+  background: var(--card-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: 18px 24px;
+  margin-bottom: 32px;
+}
+
+.path-summary-ring { flex-shrink: 0; }
+.path-summary-ring circle[data-ring-fill] {
+  transition: stroke-dashoffset 1s var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .path-summary-ring circle[data-ring-fill] { transition: none; }
+}
+
+.path-summary-text { min-width: 0; }
+
+.path-summary-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--teal);
+  line-height: 1.1;
+}
+
+.path-summary-label {
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.path-summary-caption {
+  font-size: 11.5px;
+  color: var(--text-3);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* connector — the "drawing" line between nodes. Hover it (or tab to
+   it) and it lights up with a traveling pulse — a wider invisible
+   hit zone (::before) makes that easy to trigger with the mouse. */
 .connector {
+  position: relative;
   width: 3px;
   height: 44px;
   margin: 2px 0;
@@ -331,18 +381,70 @@ svg { display: block; }
   flex-shrink: 0;
   transform: scaleY(0);
   transform-origin: top center;
+  transition: filter 200ms var(--ease-out);
+  cursor: default;
+}
+
+.connector::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  right: -10px;
+}
+
+.connector::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+  background: var(--teal);
+  box-shadow: 0 0 12px 3px var(--teal-glow);
+  opacity: 0;
 }
 
 .connector--solid { background: linear-gradient(var(--teal), var(--teal-dark)); }
+.connector--solid:hover { filter: brightness(1.35) drop-shadow(0 0 6px var(--teal-glow)); }
+.connector--solid:hover::after { animation: connector-travel 1s linear infinite; }
 
 .connector--dashed {
   background-image: linear-gradient(var(--border-strong) 55%, transparent 0%);
   background-size: 3px 10px;
   background-repeat: repeat-y;
 }
+.connector--dashed::after { background: var(--text-2); box-shadow: 0 0 10px 2px rgba(168, 187, 200, 0.5); }
+.connector--dashed:hover { filter: brightness(1.6); }
+.connector--dashed:hover::after { animation: connector-travel 1.1s linear infinite; }
+
+@keyframes connector-travel {
+  0%   { top: 0%;   opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .connector--solid:hover::after,
+  .connector--dashed:hover::after {
+    animation: none;
+    opacity: 0;
+  }
+}
 
 @media (max-width: 640px) {
   .connector { height: 32px; }
+}
+
+/* mobile-only connectors that stand in for the desktop SVG fork/merge
+   bars, so the Learn/Build/Connect stack still reads as one path */
+.fork-mobile-connector { display: none; }
+@media (max-width: 767px) {
+  .fork-mobile-connector { display: block; }
 }
 
 /* node card (rendered as a <button> — not a real link yet) */
@@ -456,14 +558,6 @@ svg { display: block; }
 
 .node--current .node-title { font-size: 16.5px; font-weight: 700; }
 
-.overall-caption {
-  font-size: 11px;
-  color: var(--text-3);
-  margin-top: 2px;
-}
-
-.node--current .pct-track { margin-left: 0; margin-top: 14px; height: 6px; }
-
 .here-tag {
   position: absolute;
   top: -12px;
@@ -500,12 +594,6 @@ svg { display: block; }
 @keyframes ping {
   0% { transform: scale(0.6); opacity: 0.9; }
   100% { transform: scale(2.2); opacity: 0; }
-}
-
-.readiness {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--teal);
 }
 
 /* pulsing glow ring behind the current node */
@@ -576,7 +664,7 @@ svg { display: block; }
 .fork-wrap {
   width: 100%;
   max-width: var(--container-wide);
-  margin: 0 auto;
+  margin: 36px auto 0;
 }
 
 /* desktop branch connector bar */

@@ -54,6 +54,19 @@
 
 <main class="map">
 
+  <!-- Overall path progress — deliberately separate from any single stage -->
+  <div class="path-summary">
+    <svg class="path-summary-ring" width="60" height="60" viewBox="0 0 60 60" aria-hidden="true">
+      <circle cx="30" cy="30" r="25" fill="none" stroke="var(--card-2)" stroke-width="6"></circle>
+      <circle cx="30" cy="30" r="25" fill="none" stroke="var(--teal)" stroke-width="6" stroke-linecap="round" stroke-dasharray="157" stroke-dashoffset="157" transform="rotate(-90 30 30)" data-ring-fill></circle>
+    </svg>
+    <div class="path-summary-text">
+      <div class="path-summary-value" data-overall-label>&mdash;%</div>
+      <div class="path-summary-label">Overall path progress</div>
+      <div class="path-summary-caption">Average across all 9 tracked stages below &mdash; not the same as any single card's own number</div>
+    </div>
+  </div>
+
   <!-- 1: AI Career Discovery — done -->
   <div class="stage" data-stage>
     <div class="stage-label">Understand me</div>
@@ -102,16 +115,13 @@
   <!-- 4: My Career Journey — current -->
   <div class="stage" data-stage>
     <div class="stage-label is-current">Your journey</div>
-    <button type="button" class="node node--current" data-overall data-coming-soon="My Career Journey">
+    <button type="button" class="node node--current" data-coming-soon="My Career Journey">
       <span class="pulse-ring" data-pulse></span>
       <span class="here-tag"><span class="pulse-dot"></span>You are here</span>
       <div class="node-row">
         <span class="node-title">My Career Journey</span>
-        <span class="readiness" data-overall-label>&mdash;%</span>
       </div>
-      <div class="overall-caption">Average across all 9 tracked stages below</div>
-      <div class="pct-track"><div class="pct-fill"></div></div>
-      <div class="node-desc" style="margin-left:0; margin-top:12px;">Your home base &mdash; Learn, Build and Connect tracked together, not as separate to-do lists.</div>
+      <div class="node-desc" style="margin-left:0; margin-top:8px;">Your home base &mdash; Learn, Build and Connect tracked together below, not as separate to-do lists.</div>
     </button>
   </div>
 
@@ -123,6 +133,8 @@
         <path d="M 440 0 L 440 8 L 734 8 L 734 40" data-fork-path/>
       </svg>
     </div>
+
+    <div class="connector connector--solid fork-mobile-connector" data-connector aria-hidden="true"></div>
 
     <div class="fork-grid">
       <!-- Learn -->
@@ -136,6 +148,7 @@
         <div class="fork-card-items">Courses &middot; Skills &middot; Certs</div>
         <div class="fork-card-note">Tracked with why each one matters, not just a checkbox.</div>
       </button>
+      <div class="connector connector--solid fork-mobile-connector" data-connector aria-hidden="true"></div>
       <!-- Build -->
       <button type="button" class="fork-card" data-fork-card data-pct="0" data-coming-soon="Build track">
         <div class="fork-card-head">
@@ -147,6 +160,7 @@
         <div class="fork-card-items">Labs &middot; Projects &middot; Volunteer</div>
         <div class="fork-card-note">Hands-on proof &mdash; what employers actually ask about.</div>
       </button>
+      <div class="connector connector--solid fork-mobile-connector" data-connector aria-hidden="true"></div>
       <!-- Connect -->
       <button type="button" class="fork-card" data-fork-card data-pct="25" data-coming-soon="Connect track">
         <div class="fork-card-head">
@@ -159,6 +173,8 @@
         <div class="fork-card-note">Tailored to your target role, not generic advice.</div>
       </button>
     </div>
+
+    <div class="connector connector--dashed fork-mobile-connector" data-connector aria-hidden="true"></div>
 
     <div class="merge-bar" aria-hidden="true">
       <svg viewBox="0 0 880 40" preserveAspectRatio="none">
