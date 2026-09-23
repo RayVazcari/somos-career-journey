@@ -402,12 +402,12 @@ svg { display: block; }
   position: absolute;
   left: 50%;
   top: 0;
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 999px;
   transform: translate(-50%, -50%);
   background: var(--teal);
-  box-shadow: 0 0 6px 1px var(--teal-glow);
+  box-shadow: 0 0 3px 0px var(--teal-glow);
   opacity: 0;
   animation: connector-travel 2s linear infinite;
   animation-delay: var(--travel-delay, 0s);
@@ -428,17 +428,20 @@ svg { display: block; }
   background-size: 3px 10px;
   background-repeat: repeat-y;
 }
-.connector--dashed::after { background: var(--text-2); box-shadow: 0 0 5px 1px rgba(168, 187, 200, 0.5); }
+.connector--dashed::after { background: var(--text-2); box-shadow: 0 0 3px 0px rgba(168, 187, 200, 0.5); }
 .connector--dashed:hover { filter: brightness(1.6); }
 
 /* shared timing for every traveling pulse on the page — the plain
    connectors above AND the fork/merge path dots below use this same
-   0/15/85/100 shape and the same 2s duration, so the whole path
-   moves at one consistent speed instead of several different ones */
+   0/30/70/100 shape and the same 2s duration, so the whole path moves
+   at one consistent speed instead of several different ones. The dot
+   only reaches full opacity well past each end (not just past 15%)
+   so its glow can't reach the card above/below even at this more
+   compact spacing. */
 @keyframes connector-travel {
   0%   { top: 0%;   opacity: 0; }
-  15%  { opacity: 0.9; }
-  85%  { opacity: 0.9; }
+  30%  { opacity: 0.85; }
+  70%  { opacity: 0.85; }
   100% { top: 100%; opacity: 0; }
 }
 
@@ -462,8 +465,6 @@ svg { display: block; }
   border: 1.5px solid var(--border);
   border-radius: var(--radius-md);
   padding: 16px 20px;
-  opacity: 0;
-  transform: translateY(14px);
   text-align: left;
   font-family: inherit;
   color: inherit;
@@ -706,7 +707,7 @@ svg { display: block; }
    the plain vertical connectors instead of a separate, slower system. */
 .fork-wrap circle.path-dot {
   fill: var(--teal);
-  filter: drop-shadow(0 0 5px var(--teal-glow));
+  filter: drop-shadow(0 0 3px var(--teal-glow));
   offset-distance: 0%;
   animation: connector-travel-path 2s linear infinite;
   animation-delay: var(--pulse-delay, 0s);
@@ -714,13 +715,13 @@ svg { display: block; }
 
 .fork-wrap circle.path-dot--muted {
   fill: var(--text-2);
-  filter: drop-shadow(0 0 4px rgba(168, 187, 200, 0.5));
+  filter: drop-shadow(0 0 2px rgba(168, 187, 200, 0.5));
 }
 
 @keyframes connector-travel-path {
   0%   { offset-distance: 0%;   opacity: 0; }
-  15%  { opacity: 0.9; }
-  85%  { opacity: 0.9; }
+  30%  { opacity: 0.85; }
+  70%  { opacity: 0.85; }
   100% { offset-distance: 100%; opacity: 0; }
 }
 
@@ -746,8 +747,6 @@ svg { display: block; }
   border: 1.5px solid var(--teal);
   border-radius: var(--radius-md);
   padding: 18px;
-  opacity: 0;
-  transform: translateY(14px);
   text-align: left;
   font-family: inherit;
   color: inherit;

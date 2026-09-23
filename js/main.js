@@ -98,14 +98,24 @@
      Node reveal — fade/rise in as each stage enters the viewport,
      progress bar fills in step with it
      ------------------------------------------------------------------ */
+  /* CSS deliberately declares no opacity/transform for .node — that's
+     what let a variant's own resting opacity (.node--upcoming: 0.9,
+     .node--reward: 0.88) silently outrank the shared hidden-state
+     opacity:0 rule since both were plain class selectors and the
+     variant came later in the stylesheet, so those cards never
+     actually started hidden. Setting the hidden state here instead,
+     then clearing it via clearProps on completion, means each card
+     always settles back onto its own CSS resting value with nothing
+     left to fight over. */
   var nodes = gsap.utils.toArray(".node:not(.node--current)");
+  gsap.set(nodes, { opacity: 0, y: 14 });
   nodes.forEach(function (node) {
     gsap.to(node, {
       opacity: 1,
       y: 0,
       duration: reduceMotion ? 0.01 : 0.5,
       ease: "power2.out",
-      onComplete: function () { gsap.set(node, { clearProps: "transform" }); },
+      onComplete: function () { gsap.set(node, { clearProps: "opacity,transform" }); },
       scrollTrigger: {
         trigger: node,
         start: "top 88%",
@@ -120,12 +130,13 @@
   /* current node reveals immediately (it's the anchor of the page) */
   var currentNode = document.querySelector(".node--current");
   if (currentNode) {
+    gsap.set(currentNode, { opacity: 0, y: 14 });
     gsap.to(currentNode, {
       opacity: 1,
       y: 0,
       duration: reduceMotion ? 0.01 : 0.55,
       ease: "power2.out",
-      onComplete: function () { gsap.set(currentNode, { clearProps: "transform" }); },
+      onComplete: function () { gsap.set(currentNode, { clearProps: "opacity,transform" }); },
       scrollTrigger: {
         trigger: currentNode,
         start: "top 90%",
@@ -186,13 +197,14 @@
      ------------------------------------------------------------------ */
   var forkCards = gsap.utils.toArray("[data-fork-card]");
   if (forkCards.length) {
+    gsap.set(forkCards, { opacity: 0, y: 14 });
     gsap.to(forkCards, {
       opacity: 1,
       y: 0,
       duration: reduceMotion ? 0.01 : 0.45,
       ease: "back.out(1.5)",
       stagger: 0.1,
-      onComplete: function () { gsap.set(forkCards, { clearProps: "transform" }); },
+      onComplete: function () { gsap.set(forkCards, { clearProps: "opacity,transform" }); },
       scrollTrigger: {
         trigger: ".fork-grid",
         start: "top 85%",
