@@ -260,7 +260,7 @@ svg { display: block; }
   background: var(--teal);
   box-shadow: 0 0 0 3px var(--teal-wash);
 }
-.legend-dot--locked {
+.legend-dot--upcoming {
   border: 1.5px dashed var(--text-4);
 }
 
@@ -360,11 +360,13 @@ svg { display: block; }
   font-family: inherit;
   color: inherit;
   cursor: pointer;
-  transition: transform var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+  transition: transform 220ms var(--ease-out), scale 220ms var(--ease-out), border-color 220ms var(--ease-out), box-shadow 220ms var(--ease-out), background 220ms var(--ease-out);
 }
 
-.node:hover { transform: translateY(12px); }
-.node:focus-visible { transform: translateY(12px); }
+.node:hover, .node:focus-visible {
+  transform: translateY(-9px) scale(1.035);
+  z-index: 1;
+}
 
 .node-row {
   display: flex;
@@ -402,13 +404,41 @@ svg { display: block; }
   line-height: 1.55;
 }
 
+/* per-node progress readout — reused on every trackable stage */
+.pct-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-3);
+  flex-shrink: 0;
+}
+
+.pct-track {
+  height: 5px;
+  background: var(--card-2);
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 10px 0 0 41px;
+}
+
+.pct-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal-dark), var(--teal));
+  border-radius: 999px;
+  width: 0;
+  transition: width 900ms var(--ease-out);
+}
+
 /* completed */
 .node--done {
   border-color: rgba(34, 226, 160, 0.55);
   background: var(--teal-wash);
 }
 .node--done .node-icon { background: rgba(34, 226, 160, 0.18); color: var(--teal); }
-.node--done:hover { border-color: var(--teal); box-shadow: 0 8px 24px -12px rgba(34, 226, 160, 0.35); }
+.node--done .pct-label { color: var(--teal); }
+.node--done:hover, .node--done:focus-visible {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px var(--teal-wash), 0 26px 54px -18px rgba(34, 226, 160, 0.65);
+}
 
 /* current */
 .node--current {
@@ -419,7 +449,20 @@ svg { display: block; }
   box-shadow: 0 0 0 6px var(--teal-wash), 0 20px 40px -20px rgba(34, 226, 160, 0.3);
 }
 
+.node--current:hover, .node--current:focus-visible {
+  transform: translateY(-7px) scale(1.02);
+  box-shadow: 0 0 0 10px var(--teal-wash), 0 32px 60px -18px rgba(34, 226, 160, 0.6);
+}
+
 .node--current .node-title { font-size: 16.5px; font-weight: 700; }
+
+.overall-caption {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.node--current .pct-track { margin-left: 0; margin-top: 14px; height: 6px; }
 
 .here-tag {
   position: absolute;
@@ -491,16 +534,21 @@ svg { display: block; }
   .here-tag .pulse-dot::before { animation: none; }
 }
 
-/* locked */
-.node--locked {
+/* upcoming — not started yet, but never gated. Anyone can open these anytime. */
+.node--upcoming {
   border: 1.5px dashed var(--border-strong);
-  opacity: 0.78;
+  opacity: 0.9;
 }
-.node--locked .node-icon { background: var(--card-2); color: var(--text-3); }
-.node--locked .node-title { color: var(--text-2); }
-.node--locked:hover { border-color: var(--text-3); opacity: 1; }
+.node--upcoming .node-icon { background: var(--card-2); color: var(--text-3); }
+.node--upcoming .node-title { color: var(--text-2); }
+.node--upcoming:hover, .node--upcoming:focus-visible {
+  opacity: 1;
+  border-color: var(--text-2);
+  border-style: solid;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06), 0 26px 50px -18px rgba(255, 255, 255, 0.2);
+}
 
-.lock-icon { color: var(--text-3); flex-shrink: 0; }
+.not-started-icon { color: var(--text-3); flex-shrink: 0; }
 
 /* reward / land the role */
 .node--reward {
@@ -509,13 +557,17 @@ svg { display: block; }
   padding: 22px 24px;
   border: 1.5px dashed rgba(240, 169, 71, 0.5);
   background: var(--gold-wash);
-  opacity: 0.85;
+  opacity: 0.88;
 }
 .node--reward .node-row { justify-content: center; }
 .node--reward .node-icon { background: rgba(240, 169, 71, 0.16); color: var(--gold); }
 .node--reward .node-title { flex: none; color: var(--gold); font-weight: 700; font-size: 15px; }
 .node--reward .node-desc { margin-left: 0; margin-top: 6px; }
-.node--reward:hover { opacity: 1; border-color: var(--gold); }
+.node--reward:hover, .node--reward:focus-visible {
+  opacity: 1;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--gold-wash), 0 28px 56px -16px rgba(240, 169, 71, 0.6);
+}
 
 /* ==========================================================================
    Fork (Learn / Build / Connect)
@@ -561,12 +613,25 @@ svg { display: block; }
 }
 
 .fork-card {
+  display: block;
+  width: 100%;
   background: var(--card);
   border: 1.5px solid var(--teal);
   border-radius: var(--radius-md);
   padding: 18px;
   opacity: 0;
   transform: translateY(14px);
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 220ms var(--ease-out), box-shadow 220ms var(--ease-out), border-color 220ms var(--ease-out);
+}
+
+.fork-card:hover, .fork-card:focus-visible {
+  transform: translateY(-9px) scale(1.035);
+  box-shadow: 0 0 0 3px var(--teal-wash), 0 28px 56px -16px rgba(34, 226, 160, 0.6);
+  z-index: 1;
 }
 
 .fork-card-head {
@@ -594,27 +659,7 @@ svg { display: block; }
   flex: 1;
 }
 
-.fork-card-pct {
-  font-size: 12px;
-  color: var(--text-2);
-  font-weight: 600;
-}
-
-.fork-bar-track {
-  height: 5px;
-  background: var(--card-2);
-  border-radius: 999px;
-  overflow: hidden;
-  margin-bottom: 12px;
-}
-
-.fork-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--teal-dark), var(--teal));
-  border-radius: 999px;
-  width: 0;
-  transition: width 1s var(--ease-out);
-}
+.fork-card .pct-track { margin-left: 0; margin-top: 0; margin-bottom: 12px; }
 
 .fork-card-items {
   font-size: 12px;

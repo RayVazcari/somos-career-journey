@@ -44,7 +44,7 @@
   <div class="hero-legend">
     <span><i class="legend-dot legend-dot--done"></i>Completed</span>
     <span><i class="legend-dot legend-dot--now"></i>You are here</span>
-    <span><i class="legend-dot legend-dot--locked"></i>Coming up</span>
+    <span><i class="legend-dot legend-dot--upcoming"></i>Not started yet &mdash; open anytime</span>
   </div>
   <div class="scroll-cue" id="scrollCue">
     <span>Scroll to explore</span>
@@ -57,11 +57,13 @@
   <!-- 1: AI Career Discovery — done -->
   <div class="stage" data-stage>
     <div class="stage-label">Understand me</div>
-    <button type="button" class="node node--done" data-coming-soon="AI Career Discovery" aria-label="Completed: AI Career Discovery">
+    <button type="button" class="node node--done" data-pct="100" data-coming-soon="AI Career Discovery">
       <div class="node-row">
         <span class="node-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg></span>
         <span class="node-title">AI Career Discovery</span>
+        <span class="pct-label"></span>
       </div>
+      <div class="pct-track"><div class="pct-fill"></div></div>
       <div class="node-desc">A real conversation, not a 4-question quiz — so results are explainable.</div>
     </button>
   </div>
@@ -70,11 +72,13 @@
   <!-- 2: Explore & Compare — done -->
   <div class="stage" data-stage>
     <div class="stage-label">Explore</div>
-    <button type="button" class="node node--done" data-coming-soon="Explore &amp; Compare Paths" aria-label="Completed: Explore and Compare Paths">
+    <button type="button" class="node node--done" data-pct="100" data-coming-soon="Explore &amp; Compare Paths">
       <div class="node-row">
         <span class="node-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg></span>
         <span class="node-title">Explore &amp; Compare Paths</span>
+        <span class="pct-label"></span>
       </div>
+      <div class="pct-track"><div class="pct-fill"></div></div>
       <div class="node-desc">See 2&ndash;3 roles side by side &mdash; and push back if a match feels off.</div>
     </button>
   </div>
@@ -83,13 +87,14 @@
   <!-- 3: Choose Your Goal — done -->
   <div class="stage" data-stage>
     <div class="stage-label">Commit</div>
-    <button type="button" class="node node--done" data-coming-soon="Explore &amp; Compare Paths" aria-label="Completed: Choose Your Goal, Product Operations Manager">
+    <button type="button" class="node node--done" data-pct="100" data-coming-soon="Explore &amp; Compare Paths">
       <div class="node-row">
         <span class="node-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg></span>
         <span class="node-title">Choose Your Goal</span>
-        <span class="node-meta">Product Operations Manager</span>
+        <span class="pct-label"></span>
       </div>
-      <div class="node-desc">Unlocks your personalized roadmap &mdash; nothing before this was locked in.</div>
+      <div class="pct-track"><div class="pct-fill"></div></div>
+      <div class="node-desc">Target: <strong>Product Operations Manager</strong> &mdash; unlocks your personalized roadmap, nothing before this was locked in.</div>
     </button>
   </div>
   <div class="connector connector--solid" data-connector></div>
@@ -97,14 +102,16 @@
   <!-- 4: My Career Journey — current -->
   <div class="stage" data-stage>
     <div class="stage-label is-current">Your journey</div>
-    <button type="button" class="node node--current" data-coming-soon="My Career Journey" aria-label="Current step: My Career Journey, 42 percent complete">
+    <button type="button" class="node node--current" data-overall data-coming-soon="My Career Journey">
       <span class="pulse-ring" data-pulse></span>
       <span class="here-tag"><span class="pulse-dot"></span>You are here</span>
       <div class="node-row">
         <span class="node-title">My Career Journey</span>
-        <span class="readiness">42%</span>
+        <span class="readiness" data-overall-label>&mdash;%</span>
       </div>
-      <div class="node-desc" style="margin-left:0; margin-top:6px;">Your home base &mdash; Learn, Build and Connect tracked together, not as separate to-do lists.</div>
+      <div class="overall-caption">Average across all 9 tracked stages below</div>
+      <div class="pct-track"><div class="pct-fill"></div></div>
+      <div class="node-desc" style="margin-left:0; margin-top:12px;">Your home base &mdash; Learn, Build and Connect tracked together, not as separate to-do lists.</div>
     </button>
   </div>
 
@@ -119,38 +126,38 @@
 
     <div class="fork-grid">
       <!-- Learn -->
-      <div class="fork-card" data-fork-card>
+      <button type="button" class="fork-card" data-fork-card data-pct="20" data-coming-soon="Learn track">
         <div class="fork-card-head">
           <span class="fork-card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></span>
           <span class="fork-card-title">Learn</span>
-          <span class="fork-card-pct">20%</span>
+          <span class="pct-label"></span>
         </div>
-        <div class="fork-bar-track"><div class="fork-bar-fill" data-fill="20"></div></div>
+        <div class="pct-track"><div class="pct-fill"></div></div>
         <div class="fork-card-items">Courses &middot; Skills &middot; Certs</div>
         <div class="fork-card-note">Tracked with why each one matters, not just a checkbox.</div>
-      </div>
+      </button>
       <!-- Build -->
-      <div class="fork-card" data-fork-card>
+      <button type="button" class="fork-card" data-fork-card data-pct="0" data-coming-soon="Build track">
         <div class="fork-card-head">
           <span class="fork-card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94z"></path></svg></span>
           <span class="fork-card-title">Build</span>
-          <span class="fork-card-pct">0%</span>
+          <span class="pct-label"></span>
         </div>
-        <div class="fork-bar-track"><div class="fork-bar-fill" data-fill="0"></div></div>
+        <div class="pct-track"><div class="pct-fill"></div></div>
         <div class="fork-card-items">Labs &middot; Projects &middot; Volunteer</div>
         <div class="fork-card-note">Hands-on proof &mdash; what employers actually ask about.</div>
-      </div>
+      </button>
       <!-- Connect -->
-      <div class="fork-card" data-fork-card>
+      <button type="button" class="fork-card" data-fork-card data-pct="25" data-coming-soon="Connect track">
         <div class="fork-card-head">
           <span class="fork-card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg></span>
           <span class="fork-card-title">Connect</span>
-          <span class="fork-card-pct">25%</span>
+          <span class="pct-label"></span>
         </div>
-        <div class="fork-bar-track"><div class="fork-bar-fill" data-fill="25"></div></div>
+        <div class="pct-track"><div class="pct-fill"></div></div>
         <div class="fork-card-items">Community &middot; Mentor &middot; Events</div>
         <div class="fork-card-note">Tailored to your target role, not generic advice.</div>
-      </div>
+      </button>
     </div>
 
     <div class="merge-bar" aria-hidden="true">
@@ -164,51 +171,52 @@
 
   <div class="connector connector--dashed" data-connector></div>
 
-  <!-- Prepare — locked -->
+  <!-- Prepare — not started yet, but never gated -->
   <div class="stage" data-stage>
-    <button type="button" class="node node--locked" data-coming-soon="Prepare" aria-label="Coming up: Prepare, resume and LinkedIn">
+    <div class="stage-label">Career launch &middot; open anytime</div>
+    <button type="button" class="node node--upcoming" data-pct="0" data-coming-soon="Prepare">
       <div class="node-row">
-        <span class="node-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="10" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
+        <span class="node-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M9 15l2 2 4-4"></path></svg></span>
         <span class="node-title">Prepare</span>
-        <span class="node-meta">Resume &middot; LinkedIn</span>
-        <svg class="lock-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="10" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        <span class="pct-label"></span>
       </div>
-      <div class="node-desc">AI writes from what you've actually done, not a template.</div>
+      <div class="pct-track"><div class="pct-fill"></div></div>
+      <div class="node-desc">Resume &amp; LinkedIn &mdash; AI writes from what you've actually done, not a template.</div>
     </button>
   </div>
   <div class="connector connector--dashed" data-connector></div>
 
-  <!-- Practice — locked -->
+  <!-- Practice — not started yet, but never gated -->
   <div class="stage" data-stage>
-    <button type="button" class="node node--locked" data-coming-soon="Practice" aria-label="Coming up: Practice, mock interviews">
+    <button type="button" class="node node--upcoming" data-pct="0" data-coming-soon="Practice">
       <div class="node-row">
         <span class="node-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path></svg></span>
         <span class="node-title">Practice</span>
-        <span class="node-meta">Mock Interviews</span>
-        <svg class="lock-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="10" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        <span class="pct-label"></span>
       </div>
-      <div class="node-desc">Personalized prep, handed off to SOMOS's Mock Interview program.</div>
+      <div class="pct-track"><div class="pct-fill"></div></div>
+      <div class="node-desc">Mock interviews &mdash; personalized prep, handed off to SOMOS's Mock Interview program.</div>
     </button>
   </div>
   <div class="connector connector--dashed" data-connector></div>
 
-  <!-- Apply — locked -->
+  <!-- Apply — not started yet, but never gated -->
   <div class="stage" data-stage>
-    <button type="button" class="node node--locked" data-coming-soon="Apply" aria-label="Coming up: Apply, job boards and tracker">
+    <button type="button" class="node node--upcoming" data-pct="0" data-coming-soon="Apply">
       <div class="node-row">
         <span class="node-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 2L11 13"></path><path d="M22 2l-7 20-4-9-9-4 20-7z"></path></svg></span>
         <span class="node-title">Apply</span>
-        <span class="node-meta">Job boards &middot; tracker</span>
-        <svg class="lock-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="10" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        <span class="pct-label"></span>
       </div>
-      <div class="node-desc">Curated boards and tips, tailored to your target role.</div>
+      <div class="pct-track"><div class="pct-fill"></div></div>
+      <div class="node-desc">Job boards &amp; tracker &mdash; curated and tailored to your target role.</div>
     </button>
   </div>
   <div class="connector connector--dashed" data-connector></div>
 
   <!-- Land the Role — reward -->
   <div class="stage" data-stage>
-    <button type="button" class="node node--reward" data-coming-soon="Apply" aria-label="Coming up: Land the Role badge">
+    <button type="button" class="node node--reward" data-coming-soon="Apply">
       <div class="node-row">
         <span class="node-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M8 21h8"></path><path d="M12 17v4"></path><path d="M7 4h10v5a5 5 0 0 1-10 0V4z"></path><path d="M7 6H4a2 2 0 0 0 2 4"></path><path d="M17 6h3a2 2 0 0 1-2 4"></path></svg></span>
         <span class="node-title">Land the Role</span>

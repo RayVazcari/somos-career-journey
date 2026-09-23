@@ -6,6 +6,48 @@
   gsap.registerPlugin(ScrollTrigger);
 
   /* ------------------------------------------------------------------
+     Progress math — every stage's number and the overall figure both
+     come from the same data-pct attributes, so they can never drift
+     out of sync with each other.
+     ------------------------------------------------------------------ */
+  function applyLabel(el) {
+    var pct = el.getAttribute("data-pct");
+    if (pct === null) return;
+    var label = el.querySelector(".pct-label");
+    if (label) label.textContent = pct + "%";
+    var fill = el.querySelector(".pct-fill");
+    if (fill) fill.dataset.target = pct;
+  }
+
+  var trackedStages = document.querySelectorAll("[data-pct]");
+  trackedStages.forEach(applyLabel);
+
+  var overall = 0;
+  if (trackedStages.length) {
+    var sum = 0;
+    trackedStages.forEach(function (el) { sum += Number(el.getAttribute("data-pct")); });
+    overall = Math.round(sum / trackedStages.length);
+  }
+
+  var overallNode = document.querySelector("[data-overall]");
+  if (overallNode) {
+    var overallLabel = overallNode.querySelector("[data-overall-label]");
+    if (overallLabel) overallLabel.textContent = overall + "%";
+    var overallFill = overallNode.querySelector(".pct-fill");
+    if (overallFill) overallFill.dataset.target = overall;
+  }
+
+  function fillOnEnter(el) {
+    var fill = el.querySelector(".pct-fill");
+    if (!fill) return;
+    fill.style.width = (fill.dataset.target || 0) + "%";
+  }
+  function unfillOnLeaveBack(el) {
+    var fill = el.querySelector(".pct-fill");
+    if (fill) fill.style.width = "0%";
+  }
+
+  /* ------------------------------------------------------------------
      Scroll cue — hide once the user starts scrolling
      ------------------------------------------------------------------ */
   var scrollCue = document.getElementById("scrollCue");
@@ -20,19 +62,24 @@
   }
 
   /* ------------------------------------------------------------------
-     Node reveal — fade/rise in as each stage enters the viewport
+     Node reveal — fade/rise in as each stage enters the viewport,
+     progress bar fills in step with it
      ------------------------------------------------------------------ */
   var nodes = gsap.utils.toArray(".node:not(.node--current)");
   nodes.forEach(function (node) {
     gsap.to(node, {
       opacity: 1,
       y: 0,
-      duration: reduceMotion ? 0.01 : 0.45,
+      duration: reduceMotion ? 0.01 : 0.5,
       ease: "power2.out",
+      onComplete: function () { gsap.set(node, { clearProps: "transform" }); },
       scrollTrigger: {
         trigger: node,
         start: "top 88%",
-        toggleActions: "play none none reverse"
+        toggleActions: "play none none reverse",
+        onEnter: function () { fillOnEnter(node); },
+        onEnterBack: function () { fillOnEnter(node); },
+        onLeaveBack: function () { unfillOnLeaveBack(node); }
       }
     });
   });
@@ -43,12 +90,16 @@
     gsap.to(currentNode, {
       opacity: 1,
       y: 0,
-      duration: reduceMotion ? 0.01 : 0.5,
+      duration: reduceMotion ? 0.01 : 0.55,
       ease: "power2.out",
+      onComplete: function () { gsap.set(currentNode, { clearProps: "transform" }); },
       scrollTrigger: {
         trigger: currentNode,
         start: "top 90%",
-        toggleActions: "play none none reverse"
+        toggleActions: "play none none reverse",
+        onEnter: function () { fillOnEnter(currentNode); },
+        onEnterBack: function () { fillOnEnter(currentNode); },
+        onLeaveBack: function () { unfillOnLeaveBack(currentNode); }
       }
     });
   }
@@ -60,7 +111,7 @@
   connectors.forEach(function (line) {
     gsap.to(line, {
       scaleY: 1,
-      duration: reduceMotion ? 0.01 : 0.5,
+      duration: reduceMotion ? 0.01 : 0.55,
       ease: "power1.inOut",
       scrollTrigger: {
         trigger: line,
@@ -78,7 +129,7 @@
     if (!paths.length) return;
     gsap.to(paths, {
       strokeDashoffset: 0,
-      duration: reduceMotion ? 0.01 : 0.6,
+      duration: reduceMotion ? 0.01 : 0.65,
       ease: "power1.inOut",
       stagger: 0.08,
       scrollTrigger: {
@@ -95,7 +146,7 @@
   if (mergeBar) drawPaths("[data-merge-path]", mergeBar);
 
   /* ------------------------------------------------------------------
-     Fork cards — staggered reveal + progress bar fill
+     Fork cards — staggered pop-in reveal + progress bar fill
      ------------------------------------------------------------------ */
   var forkCards = gsap.utils.toArray("[data-fork-card]");
   if (forkCards.length) {
@@ -105,20 +156,14 @@
       duration: reduceMotion ? 0.01 : 0.45,
       ease: "back.out(1.5)",
       stagger: 0.1,
+      onComplete: function () { gsap.set(forkCards, { clearProps: "transform" }); },
       scrollTrigger: {
         trigger: ".fork-grid",
         start: "top 85%",
         toggleActions: "play none none reverse",
-        onEnter: fillBars,
-        onEnterBack: fillBars
+        onEnter: function () { forkCards.forEach(fillOnEnter); },
+        onEnterBack: function () { forkCards.forEach(fillOnEnter); }
       }
-    });
-  }
-
-  function fillBars() {
-    document.querySelectorAll("[data-fill]").forEach(function (bar) {
-      var pct = bar.getAttribute("data-fill");
-      bar.style.width = pct + "%";
     });
   }
 
@@ -141,7 +186,9 @@
   }
 
   /* ------------------------------------------------------------------
-     "Coming soon" toast — for nodes/pills not yet built
+     "Coming soon" toast — for nodes/pills not yet built.
+     Every node here is always clickable — nothing on this path is
+     ever gated behind finishing something else first.
      ------------------------------------------------------------------ */
   var toastStack = document.getElementById("toastStack");
 
