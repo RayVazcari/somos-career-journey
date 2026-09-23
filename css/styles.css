@@ -413,9 +413,11 @@ svg { display: block; }
   animation-delay: var(--travel-delay, 0s);
 }
 
+/* hover only brightens the glow — it never changes the pulse speed,
+   so every connector keeps the same 2s timing whether you're
+   interacting with it or not */
 .connector:hover::after {
   transform: translate(-50%, -50%) scale(1.35);
-  animation-duration: 0.9s;
 }
 
 .connector--solid { background: linear-gradient(var(--teal), var(--teal-dark)); }
@@ -819,6 +821,11 @@ svg { display: block; }
   stroke-dasharray: 5 6;
 }
 @media (min-width: 768px) { .merge-bar { display: block; } }
+
+/* the dashed connector right after the merge — no top margin here,
+   so it flows continuously off the merge-bar's own line instead of
+   reading as two separate dashed segments with a gap between them */
+.fork-wrap + .connector--dashed { margin-top: 0; }
 
 /* ==========================================================================
    Footer
