@@ -1,0 +1,229 @@
+/* ==========================================================================
+   Explore & Compare Paths
+   ========================================================================== */
+
+.cmp-header {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 24px clamp(16px, 4vw, 40px) 0;
+}
+
+.cmp-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.cmp-header h1 {
+  margin: 10px 0 0;
+  font-size: clamp(22px, 3vw, 28px);
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.cmp-sub {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: var(--text-2);
+  max-width: 640px;
+  line-height: 1.55;
+}
+.cmp-sub strong { color: var(--text); }
+
+.cmp-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  padding-top: 4px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.cmp-progress-row { display: inline-flex; align-items: center; gap: 6px; }
+.cmp-progress strong { color: var(--teal); font-weight: 700; }
+.cmp-ring circle[data-program-ring] { transition: stroke-dashoffset 1s var(--ease-out); }
+@media (prefers-reduced-motion: reduce) { .cmp-ring circle[data-program-ring] { transition: none; } }
+
+.cmp-main {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 22px clamp(16px, 4vw, 40px) 70px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* ---------- cards ---------- */
+.cmp-grid, .cmp-more-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 20px;
+}
+
+.role-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: role-in 420ms var(--ease-out) forwards;
+  transition: border-color 200ms, box-shadow 200ms;
+}
+@keyframes role-in { to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .role-card { animation-duration: 1ms; } }
+
+.role-card.is-primary {
+  border: 2px solid var(--teal);
+  box-shadow: 0 0 0 5px var(--teal-wash), 0 24px 44px -26px rgba(34, 226, 160, 0.45);
+}
+
+.role-head { display: flex; align-items: center; gap: 11px; margin-bottom: 12px; }
+.role-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--teal-wash); color: var(--teal);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.role-name { font-size: 16px; font-weight: 700; flex: 1; line-height: 1.25; }
+
+.role-fitrow { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.role-fit { font-size: 12.5px; font-weight: 600; color: var(--teal); }
+.role-fit.is-medium { color: var(--gold); }
+.role-fit.is-lower { color: var(--text-3); }
+
+.role-tag {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.4px;
+  border-radius: 999px; padding: 3px 10px;
+}
+.role-tag--primary { background: var(--teal); color: #06251C; }
+.role-tag--exploring { color: var(--text-2); border: 1px solid var(--border-strong); font-weight: 600; }
+
+.role-section { margin-bottom: 14px; }
+.role-section-label {
+  font-size: 11.5px; font-weight: 700; color: var(--text-3);
+  letter-spacing: 0.4px; margin-bottom: 7px;
+}
+.role-point {
+  display: flex; gap: 8px; margin-bottom: 7px;
+  font-size: 13px; color: var(--text-2); line-height: 1.55;
+}
+.role-point i { font-style: normal; flex-shrink: 0; font-weight: 700; }
+.role-point--why i { color: var(--teal); }
+.role-point--consider i { color: var(--gold); }
+
+.role-chips { display: flex; flex-wrap: wrap; gap: 7px; margin: 4px 0 18px; }
+.role-chip {
+  font-size: 11.5px; background: var(--card-2);
+  border: 1px solid var(--border-strong); border-radius: 999px;
+  padding: 4px 11px; color: var(--text-2);
+}
+
+.role-actions { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
+
+.role-btn {
+  width: 100%; font-family: inherit; font-weight: 700; font-size: 13.5px;
+  padding: 10px 16px; border-radius: 10px; cursor: pointer;
+  background: transparent; border: 1px solid var(--border-strong); color: var(--text);
+  transition: border-color 150ms, background 150ms, transform 150ms;
+}
+.role-btn:hover { border-color: var(--teal); }
+.role-btn:active { transform: scale(0.98); }
+.role-btn--primary {
+  background: var(--teal-wash); border-color: var(--teal); color: var(--teal); cursor: default;
+}
+.role-btn--primary:hover { border-color: var(--teal); }
+
+.role-link {
+  background: none; border: none; padding: 2px; align-self: center;
+  font-family: inherit; font-size: 12px; color: var(--text-3); cursor: pointer;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.role-link:hover { color: var(--text-2); }
+
+/* ---------- collapsibles ---------- */
+.cmp-toggle {
+  display: flex; align-items: center; gap: 8px;
+  background: none; border: none; padding: 0;
+  color: var(--teal); font-family: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer;
+}
+.cmp-caret { display: inline-block; transition: transform 200ms var(--ease-out); }
+[aria-expanded="true"] .cmp-caret,
+[aria-expanded="true"].cmp-toggle .cmp-caret { transform: rotate(180deg); }
+
+.cmp-more-body { padding-top: 16px; }
+.cmp-more-empty { font-size: 13px; color: var(--text-3); font-style: italic; }
+
+.cmp-feedback {
+  background: var(--card-2);
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  padding: 18px 24px;
+}
+.cmp-feedback-head {
+  display: flex; align-items: center; gap: 14px; width: 100%;
+  background: none; border: none; padding: 0; text-align: left;
+  color: inherit; font-family: inherit; cursor: pointer;
+}
+.cmp-feedback-icon {
+  width: 34px; height: 34px; border-radius: 9px;
+  background: var(--gold-wash); color: var(--gold);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.cmp-feedback-copy { flex: 1; display: flex; flex-direction: column; }
+.cmp-feedback-title { font-size: 14px; font-weight: 600; }
+.cmp-feedback-desc { font-size: 12.5px; color: var(--text-2); }
+.cmp-feedback-head .cmp-caret { color: var(--text-2); }
+
+.cmp-feedback-body { padding-top: 16px; }
+.cmp-fb-log { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+.cmp-fb-msg {
+  font-size: 13.5px; line-height: 1.55; padding: 11px 14px; border-radius: 12px; max-width: 86%;
+  opacity: 0; animation: role-in 300ms var(--ease-out) forwards;
+}
+.cmp-fb-msg--user { align-self: flex-end; background: var(--teal); color: #06251C; font-weight: 500; }
+.cmp-fb-msg--ai { align-self: flex-start; background: var(--card); border: 1px solid var(--border); }
+
+.cmp-fb-row { display: flex; gap: 12px; }
+#fbInput {
+  flex: 1; background: var(--card); border: 1px solid var(--border-strong);
+  border-radius: 10px; padding: 11px 14px; color: var(--text); font-size: 14px; font-family: inherit;
+}
+#fbInput:focus-visible { outline: 2px solid var(--teal); outline-offset: 1px; }
+#fbInput::placeholder { color: var(--text-3); }
+.cmp-fb-send {
+  background: var(--teal); border: none; color: #06251C; font-weight: 700; font-size: 14px;
+  padding: 11px 20px; border-radius: 10px; cursor: pointer; font-family: inherit;
+}
+.cmp-fb-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ---------- bottom bar ---------- */
+.cmp-bottom {
+  background: var(--card-2);
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  padding: 18px 26px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+}
+.cmp-bottom-copy { font-size: 14px; line-height: 1.7; }
+.cmp-bottom-label { color: var(--text-3); }
+.cmp-bottom-gap { margin-left: 16px; }
+.cmp-primary-name { color: var(--teal); }
+.cmp-continue {
+  background: var(--teal); border: none; color: #06251C;
+  font-weight: 700; font-size: 14px; font-family: inherit;
+  padding: 11px 22px; border-radius: 10px; cursor: pointer;
+  transition: transform 150ms, box-shadow 150ms;
+}
+.cmp-continue:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -10px rgba(34, 226, 160, 0.5); }
+
+@media (max-width: 640px) {
+  .cmp-progress { align-items: flex-start; }
+  .cmp-bottom-gap { margin-left: 0; display: block; }
+  .cmp-continue { width: 100%; }
+  .feedback-btn { bottom: 96px; }
+}

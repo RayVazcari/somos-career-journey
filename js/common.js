@@ -71,4 +71,34 @@
   }
 
   window.SomosToast = showToast;
+
+  /* ------------------------------------------------------------------
+     Shared progress readout — any page can drop in:
+       [data-program-overall]      -> "38%"
+       [data-stage-pct="compare"]  -> that stage's own "100%"
+       <circle data-program-ring>  -> ring filled to the overall figure
+     all sourced from js/progress-data.js, so no screen ever carries
+     its own copy of a number.
+     ------------------------------------------------------------------ */
+  var progress = window.SomosProgress;
+  if (progress) {
+    document.querySelectorAll("[data-program-overall]").forEach(function (el) {
+      el.textContent = progress.overall + "%";
+    });
+    document.querySelectorAll("[data-stage-pct]").forEach(function (el) {
+      var v = progress.get(el.getAttribute("data-stage-pct"));
+      if (v !== null) el.textContent = v + "%";
+    });
+    document.querySelectorAll("circle[data-program-ring]").forEach(function (ring) {
+      var r = Number(ring.getAttribute("r"));
+      var c = 2 * Math.PI * r;
+      ring.setAttribute("stroke-dasharray", String(c));
+      ring.style.strokeDashoffset = String(c);
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          ring.style.strokeDashoffset = String(c * (1 - progress.overall / 100));
+        });
+      });
+    });
+  }
 })();
