@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Career Discovery — SOMOS.tech</title>
+<meta name="description" content="A real conversation about your background, not a 4-question quiz — so your career matches are explainable.">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/discovery.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="brand">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#22E2A0" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="6"></rect><path d="M8 12l2.5 2.5L16 9" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    SOMOS.tech
+  </div>
+  <div class="nav-links">
+    <a href="#">Home</a>
+    <a href="#">Community</a>
+    <a href="#" aria-current="page">Programs</a>
+    <a href="#">Career</a>
+    <a href="#">About</a>
+  </div>
+  <div class="nav-cta">
+    <span class="concept-pill">CONCEPT</span>
+  </div>
+</nav>
+
+<div class="switcher" role="navigation" aria-label="Career Journey screens">
+  <a href="index.html">Map</a>
+  <a href="ai-discovery.html" aria-current="page">Discovery</a>
+  <span class="is-locked" data-coming-soon="Explore &amp; Compare Paths">Compare</span>
+  <span class="is-locked" data-coming-soon="My Career Journey">My Journey</span>
+  <span class="is-locked" data-coming-soon="Living Roadmap">Roadmap</span>
+  <span class="is-locked" data-coming-soon="Prepare">Prepare</span>
+  <span class="is-locked" data-coming-soon="Practice">Practice</span>
+  <span class="is-locked" data-coming-soon="Apply">Apply</span>
+</div>
+
+<header class="disc-header">
+  <div class="disc-header-top">
+    <div>
+      <span class="eyebrow">CONCEPT &middot; AI CAREER DISCOVERY</span>
+      <h1>Let&rsquo;s figure out where you fit in tech</h1>
+    </div>
+    <div class="disc-step" id="stepLabel">Step 1 of 6</div>
+  </div>
+  <div class="disc-progress" id="discProgress" aria-hidden="true">
+    <div class="disc-progress-seg" data-seg></div>
+    <div class="disc-progress-seg" data-seg></div>
+    <div class="disc-progress-seg" data-seg></div>
+    <div class="disc-progress-seg" data-seg></div>
+    <div class="disc-progress-seg" data-seg></div>
+    <div class="disc-progress-seg" data-seg></div>
+  </div>
+</header>
+
+<main class="disc-main">
+
+  <!-- CHAT -->
+  <section class="chat-panel" aria-label="Discovery conversation">
+    <div class="chat-log" id="chatLog">
+      <div class="msg msg--ai">
+        <span class="msg-avatar msg-avatar--ai">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg>
+        </span>
+        <div class="msg-bubble">Tell me a bit about what you're doing today &mdash; no tech experience needed.</div>
+      </div>
+    </div>
+
+    <div class="chat-chips" id="chatChips" aria-live="polite"></div>
+
+    <div class="chat-composer">
+      <div class="chat-composer-row">
+        <input type="text" id="chatInput" aria-label="Type your answer" placeholder="Type your answer, or pick a chip above&hellip;">
+        <button type="button" class="chat-send" id="chatSend">Continue</button>
+      </div>
+      <div class="chat-hint">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#718496" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-5"></path><path d="M12 8h.01"></path></svg>
+        <span>A sentence or two works better than one word &mdash; the more you share, the more precisely we can match you.</span>
+      </div>
+
+      <div class="chat-cta" id="chatCta">
+        <span style="font-size:13px; color:var(--text-2);">Profile complete &mdash; ready when you are.</span>
+        <button type="button" class="chat-cta-btn" data-coming-soon="Explore &amp; Compare Paths">See my matches &#8594;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE PROFILE -->
+  <aside class="profile-panel" aria-label="Your career profile, updating live">
+    <div class="profile-header">
+      <div class="profile-title">BUILDING YOUR CAREER PROFILE</div>
+      <div class="profile-caption">This updates live as we talk &mdash; it carries into your roadmap, resume, and mentor matches.</div>
+    </div>
+
+    <div class="profile-fields">
+      <div class="profile-field">
+        <div class="profile-field-label">Background</div>
+        <div class="profile-field-value" data-field="background"><span class="not-asked">Not asked yet</span></div>
+      </div>
+      <div class="profile-field">
+        <div class="profile-field-label">Experience</div>
+        <div class="profile-field-value" data-field="experience"><span class="not-asked">Not asked yet</span></div>
+      </div>
+      <div class="profile-field">
+        <div class="profile-field-label">Enjoys (so far)</div>
+        <div class="profile-field-value" data-field="enjoys"><span class="not-asked">Not asked yet</span></div>
+      </div>
+      <div class="profile-field">
+        <div class="profile-field-label">Coding comfort</div>
+        <div class="profile-field-value" data-field="coding"><span class="not-asked">Not asked yet</span></div>
+      </div>
+      <div class="profile-field">
+        <div class="profile-field-label">Priorities</div>
+        <div class="profile-field-value" data-field="priorities"><span class="not-asked">Not asked yet</span></div>
+      </div>
+    </div>
+
+    <div class="profile-callout">
+      <span class="profile-callout-label">Why this matters:</span> the more we know, the less we rely on a bare match percentage &mdash; and the more we can explain <em>why</em> a role could fit you.
+    </div>
+  </aside>
+
+</main>
+
+<button class="feedback-btn" type="button" id="feedbackBtn">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F0A947" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"></path></svg>
+  Feedback
+</button>
+
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="js/common.js"></script>
+<script src="js/discovery.js"></script>
+</body>
+</html>

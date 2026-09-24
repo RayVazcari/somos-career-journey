@@ -49,9 +49,15 @@
     }
   }
 
+  /* A node/pill with both data-href and data-coming-soon has been
+     built for real — navigate there instead of showing the toast.
+     Keeping data-coming-soon on it too means no HTML has to change
+     again once the next screen after it gets built. */
   document.querySelectorAll("[data-coming-soon]").forEach(function (el) {
     el.addEventListener("click", function (e) {
       e.preventDefault();
+      var href = el.getAttribute("data-href");
+      if (href) { window.location.href = href; return; }
       var screen = el.getAttribute("data-coming-soon");
       showToast("Not built yet", "The " + screen + " screen is next up — check back soon.");
     });
