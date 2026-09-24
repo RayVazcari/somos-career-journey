@@ -6,20 +6,25 @@
   gsap.registerPlugin(ScrollTrigger);
 
   /* ------------------------------------------------------------------
-     Progress math — every stage's number and the overall figure both
-     come from the same data-pct attributes, so they can never drift
-     out of sync with each other.
+     Progress math — every stage's number comes from js/progress-data.js,
+     the one shared file every page reads (see that file's comment for
+     why). This page no longer hardcodes any percentage in its own
+     markup; it looks each card's value up by data-stage-key/data-track
+     and writes data-pct itself, so everything downstream (labels, bar
+     fills, the overall average) still works unchanged.
      ------------------------------------------------------------------ */
   function applyLabel(el) {
-    var pct = el.getAttribute("data-pct");
-    if (pct === null) return;
+    var key = el.getAttribute("data-stage-key") || el.getAttribute("data-track");
+    var pct = key && window.SomosProgress ? window.SomosProgress.get(key) : null;
+    if (pct === null || pct === undefined) return;
+    el.setAttribute("data-pct", pct);
     var label = el.querySelector(".pct-label");
     if (label) label.textContent = pct + "%";
     var fill = el.querySelector(".pct-fill");
     if (fill) fill.dataset.target = pct;
   }
 
-  var trackedStages = document.querySelectorAll("[data-pct]");
+  var trackedStages = document.querySelectorAll("[data-stage-key], [data-track]");
   trackedStages.forEach(applyLabel);
 
   /* "My Career Journey" shows its OWN number — the sum of its three
@@ -45,12 +50,7 @@
     if (fill) fill.dataset.target = total;
   });
 
-  var overall = 0;
-  if (trackedStages.length) {
-    var sum = 0;
-    trackedStages.forEach(function (el) { sum += Number(el.getAttribute("data-pct")); });
-    overall = Math.round(sum / trackedStages.length);
-  }
+  var overall = window.SomosProgress ? window.SomosProgress.overall : 0;
 
   /* Overall path progress lives in its own standalone widget (.path-summary),
      never inside a stage card — keeping it physically separate is what

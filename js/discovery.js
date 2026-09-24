@@ -4,6 +4,26 @@
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ------------------------------------------------------------------
+     Overall program progress — same shared figure the Map shows,
+     from the same js/progress-data.js. Every screen carries this.
+     ------------------------------------------------------------------ */
+  if (window.SomosProgress) {
+    var overallLabel = document.querySelector("[data-overall-label]");
+    if (overallLabel) overallLabel.textContent = window.SomosProgress.overall + "%";
+
+    var ring = document.querySelector("[data-ring-fill]");
+    if (ring) {
+      var circumference = 2 * Math.PI * 7; // matches r="7" in the header ring
+      var offset = circumference * (1 - window.SomosProgress.overall / 100);
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          ring.style.strokeDashoffset = String(offset);
+        });
+      });
+    }
+  }
+
+  /* ------------------------------------------------------------------
      Scripted conversation — no backend yet, so this is a fixed tree,
      not a real model. Each step maps to one field in the live Career
      Profile panel, matching the design spec's 5 fields.
