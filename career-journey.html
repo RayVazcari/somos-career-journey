@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Career Journey — SOMOS.tech</title>
+<meta name="description" content="Your home base — Learn, Build and Connect tracked together, with real milestones that mean something.">
+<link rel="stylesheet" href="css/styles.css?v=3">
+<link rel="stylesheet" href="css/dashboard.css?v=1">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="brand">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#22E2A0" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="6"></rect><path d="M8 12l2.5 2.5L16 9" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    SOMOS.tech
+  </div>
+  <div class="nav-links">
+    <a href="#">Home</a>
+    <a href="#">Community</a>
+    <a href="ai-discovery.html">Programs</a>
+    <a href="#">Career</a>
+    <a href="#">About</a>
+  </div>
+  <div class="nav-cta">
+    <div class="avatar">RV</div>
+  </div>
+</nav>
+
+<div class="switcher" role="navigation" aria-label="Career Journey screens">
+  <a href="index.html">Map</a>
+  <a href="ai-discovery.html">Discovery</a>
+  <a href="compare-careers.html">Compare</a>
+  <a href="career-journey.html" aria-current="page">My Journey</a>
+  <span class="is-locked" data-coming-soon="Living Roadmap">Roadmap</span>
+  <span class="is-locked" data-coming-soon="Prepare">Prepare</span>
+  <span class="is-locked" data-coming-soon="Practice">Practice</span>
+  <span class="is-locked" data-coming-soon="Apply">Apply</span>
+</div>
+
+<header class="dash-header">
+  <div class="dash-header-main">
+    <div>
+      <span class="eyebrow">CONCEPT &middot; MY CAREER JOURNEY</span>
+      <h1>My Career Journey</h1>
+      <div class="dash-target">Target role: <strong>Product Operations Manager</strong></div>
+      <a href="ai-discovery.html" class="dash-revisit">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22E2A0" stroke-width="2.4"><circle cx="12" cy="12" r="10"></circle><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        Career direction set from your Discovery conversation &middot; revisit it
+      </a>
+    </div>
+    <div class="dash-readiness">
+      <svg class="dash-readiness-ring" width="64" height="64" viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="32" cy="32" r="27" fill="none" stroke="var(--card-2)" stroke-width="6"></circle>
+        <circle cx="32" cy="32" r="27" fill="none" stroke="var(--teal)" stroke-width="6" stroke-linecap="round" transform="rotate(-90 32 32)" data-readiness-ring></circle>
+      </svg>
+      <div>
+        <div class="dash-readiness-label">Career readiness</div>
+        <div class="dash-readiness-value" data-readiness-value>&mdash;%</div>
+      </div>
+    </div>
+  </div>
+  <div class="dash-program-row">
+    <svg class="dash-program-ring" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+      <circle cx="8" cy="8" r="6" fill="none" stroke="var(--card-2)" stroke-width="2.5"></circle>
+      <circle cx="8" cy="8" r="6" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round" transform="rotate(-90 8 8)" data-program-ring></circle>
+    </svg>
+    Overall program: <strong data-program-overall>&mdash;%</strong>
+    <span class="dash-program-note">&mdash; a different number from career readiness above, which reflects what you've actually completed, not pages visited</span>
+  </div>
+</header>
+
+<main class="dash-main">
+
+  <!-- Shared Career Profile -->
+  <section class="profile-card">
+    <div class="profile-card-main">
+      <div class="profile-card-title">SHARED CAREER PROFILE</div>
+      <div class="profile-card-row">
+        <div>
+          <div class="profile-card-label">Background</div>
+          <div class="profile-card-text">B.S. Biology &middot; Lab &amp; clinic experience</div>
+        </div>
+        <div>
+          <div class="profile-card-label">Transferable skills</div>
+          <div class="profile-card-chips">
+            <span class="mini-chip">Research</span>
+            <span class="mini-chip">Coordination</span>
+            <span class="mini-chip">Documentation</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="profile-card-divider"></div>
+    <div class="profile-card-missing">
+      <div class="profile-card-label">What&rsquo;s missing</div>
+      <div class="profile-card-missing-value">Hands-on project</div>
+    </div>
+  </section>
+
+  <!-- Next step -->
+  <section class="next-step">
+    <div class="next-step-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+    </div>
+    <div class="next-step-copy">
+      <div class="next-step-label">RECOMMENDED NEXT STEP</div>
+      <div class="next-step-text">Finish SQL Basics &mdash; your fastest path to a stronger Build score</div>
+    </div>
+    <button type="button" class="next-step-btn" data-coming-soon="Living Roadmap">Start next step</button>
+  </section>
+
+  <!-- Learn / Build / Connect -->
+  <div class="track-grid" id="trackGrid"></div>
+
+</main>
+
+<footer class="dash-footer">SOMOS.tech &middot; Starting in Tech v4 &mdash; concept mockup, not final product</footer>
+
+<button class="feedback-btn" type="button" id="feedbackBtn">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F0A947" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"></path></svg>
+  Feedback
+</button>
+
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="js/progress-data.js?v=2"></script>
+<script src="js/common.js?v=3"></script>
+<script src="js/dashboard.js?v=1"></script>
+</body>
+</html>

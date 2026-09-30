@@ -35,6 +35,12 @@
   window.SomosProgress = {
     stages: STAGES,
     overall: overall,
-    get: function (key) { return STAGES.hasOwnProperty(key) ? STAGES[key] : null; }
+    get: function (key) { return STAGES.hasOwnProperty(key) ? STAGES[key] : null; },
+    /* e.g. sum(["learn","build","connect"]) -> "My Career Journey"'s
+       own clamped total, wherever a page needs that same composite. */
+    sum: function (list) {
+      var total = list.reduce(function (t, k) { return t + (STAGES[k] || 0); }, 0);
+      return Math.min(100, total);
+    }
   };
 })();
