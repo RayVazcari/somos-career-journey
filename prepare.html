@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Craft Your Resume — SOMOS.tech</title>
+<meta name="description" content="A resume and LinkedIn profile already drafted from what you've actually done, not a template.">
+<link rel="stylesheet" href="css/styles.css?v=3">
+<link rel="stylesheet" href="css/launch.css?v=1">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="brand">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#22E2A0" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="6"></rect><path d="M8 12l2.5 2.5L16 9" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    SOMOS.tech
+  </div>
+  <div class="nav-links">
+    <a href="#">Home</a>
+    <a href="#">Community</a>
+    <a href="ai-discovery.html" aria-current="page">Programs</a>
+    <a href="#">Career</a>
+    <a href="#">About</a>
+  </div>
+  <div class="nav-cta"><span class="concept-pill">CONCEPT</span></div>
+</nav>
+
+<div class="switcher" role="navigation" aria-label="Career Journey screens">
+  <a href="index.html">Map</a>
+  <a href="ai-discovery.html">Discovery</a>
+  <a href="compare-careers.html">Compare</a>
+  <a href="career-journey.html">My Journey</a>
+  <a href="living-roadmap.html">Roadmap</a>
+  <a href="prepare.html" aria-current="page">Prepare</a>
+  <a href="practice.html">Practice</a>
+  <a href="apply.html">Apply</a>
+</div>
+
+<header class="ln-header">
+  <div class="ln-top">
+    <div>
+      <span class="eyebrow">CONCEPT &middot; CAREER LAUNCH</span>
+      <h1>Craft your resume</h1>
+      <p class="ln-sub">Learn what makes a resume stand out &mdash; then see it already drafted with what you told us in Discovery and what you&rsquo;ve completed in Starting in Tech.</p>
+    </div>
+    <div class="ln-meta">
+      <div class="ln-steps" aria-label="Career launch steps">
+        <a class="ln-step" href="prepare.html" aria-current="step">1 &middot; Prepare</a>
+        <a class="ln-step" href="practice.html">2 &middot; Practice</a>
+        <a class="ln-step" href="apply.html">3 &middot; Apply</a>
+      </div>
+      <div class="ln-meta-row">
+        <svg class="ln-ring" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+          <circle cx="8" cy="8" r="6" fill="none" stroke="var(--card-2)" stroke-width="2.5"></circle>
+          <circle cx="8" cy="8" r="6" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round" transform="rotate(-90 8 8)" data-program-ring></circle>
+        </svg>
+        Overall program: <strong data-program-overall>&mdash;%</strong>
+      </div>
+      <div class="ln-meta-row">This step: <strong data-stage-pct="prepare">&mdash;%</strong></div>
+    </div>
+  </div>
+</header>
+
+<main class="ln-main">
+
+  <!-- XYZ model + builder -->
+  <section class="ln-card">
+    <div class="ln-card-title">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8FD6FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-5"></path><path d="M12 8h.01"></path></svg>
+      The XYZ model: show impact, not just tasks
+    </div>
+    <div class="xyz-formula">&ldquo;Accomplished [X] as measured by [Y], by doing [Z]&rdquo;</div>
+    <div class="xyz-examples">
+      <div><span class="xyz-weak">&#10007; Weak:</span> <em>&ldquo;Helped with customer service&rdquo;</em></div>
+      <div><span class="xyz-strong">&#10003; Strong:</span> <em>&ldquo;Increased sales 10% (Y) via product knowledge (Z)&rdquo;</em></div>
+    </div>
+
+    <div class="xyz-builder">
+      <div class="ln-label">TRY IT WITH A REAL ACCOMPLISHMENT OF YOURS</div>
+      <div class="xyz-fields">
+        <div class="xyz-field">
+          <label for="xyzX">X &mdash; what you accomplished</label>
+          <input class="ln-input" id="xyzX" type="text" placeholder="e.g. Cut lost sample handoffs between shifts">
+        </div>
+        <div class="xyz-field">
+          <label for="xyzY">Y &mdash; how you measured it</label>
+          <input class="ln-input" id="xyzY" type="text" placeholder="e.g. weekly audit of ~100 samples">
+        </div>
+        <div class="xyz-field">
+          <label for="xyzZ">Z &mdash; what you did</label>
+          <input class="ln-input" id="xyzZ" type="text" placeholder="e.g. introducing a shared tracking sheet">
+        </div>
+      </div>
+      <div class="xyz-preview is-empty" id="xyzPreview" aria-live="polite">Fill in the three parts and your bullet appears here &mdash; in your own words, never invented for you.</div>
+      <button type="button" class="ln-btn ln-btn--primary" id="xyzAdd" disabled>Add to my resume</button>
+    </div>
+  </section>
+
+  <!-- What makes a resume stand out -->
+  <section>
+    <div class="ln-label">WHAT MAKES A RESUME STAND OUT</div>
+    <div class="tips-grid">
+      <div class="tip"><strong>Quantify everything</strong>&ldquo;200+ users&rdquo;, &ldquo;8% improvement&rdquo;</div>
+      <div class="tip"><strong>List certifications</strong>Even free ones show commitment</div>
+      <div class="tip"><strong>Include projects</strong>School or hackathon projects count</div>
+      <div class="tip"><strong>Keep it scannable</strong>Clear sections, no walls of text</div>
+      <div class="tip"><strong>Show volunteer work</strong>Demonstrates initiative</div>
+      <div class="tip"><strong>Strong summary</strong>1&ndash;2 sentences, who you are</div>
+    </div>
+  </section>
+
+  <!-- Your resume / LinkedIn -->
+  <section>
+    <div class="doc-head">
+      <div class="doc-head-left">
+        <span class="ln-label" style="margin:0">YOUR DRAFT</span>
+        <span class="badge-teal">already drafted from your journey</span>
+      </div>
+      <div class="tabs" role="tablist" aria-label="Document type">
+        <button type="button" class="tab" role="tab" id="tabResume" aria-selected="true" aria-controls="docResume">Resume</button>
+        <button type="button" class="tab" role="tab" id="tabLinkedin" aria-selected="false" aria-controls="docLinkedin">LinkedIn</button>
+      </div>
+    </div>
+
+    <div class="paper" id="docResume" role="tabpanel" aria-labelledby="tabResume"></div>
+    <div class="paper" id="docLinkedin" role="tabpanel" aria-labelledby="tabLinkedin" hidden></div>
+  </section>
+
+  <!-- Brand beyond the resume -->
+  <section class="ln-card">
+    <div class="ln-card-title">Build your brand beyond the resume</div>
+    <div class="brand-list" id="brandList"></div>
+    <button type="button" class="brand-review" data-coming-soon="Resume Review with Grace" data-external>Want a second opinion? Resume Review with Grace &#8594;</button>
+  </section>
+
+  <!-- Anything we missed -->
+  <section class="ln-card ln-card--raised">
+    <button type="button" class="missed-head" id="missedToggle" aria-expanded="false" aria-controls="missedBody">
+      <span class="missed-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      </span>
+      <span class="missed-copy">
+        <span class="missed-title">Anything we missed?</span>
+        <span class="missed-desc">Mention any other experience &mdash; even if you&rsquo;re not sure it&rsquo;s resume-worthy. We&rsquo;ll help you judge it.</span>
+      </span>
+      <span class="caret" aria-hidden="true">&#9662;</span>
+    </button>
+    <div class="missed-body" id="missedBody" hidden>
+      <textarea class="ln-textarea" id="missedInput" aria-label="Another experience you're unsure about" placeholder="e.g. I coached a youth soccer team on weekends for two years."></textarea>
+      <div><button type="button" class="ln-btn ln-btn--primary" id="missedCheck">Is this resume-worthy?</button></div>
+      <div id="missedOut" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <a class="ln-next" href="practice.html">Next: Practice &#8594;</a>
+
+</main>
+
+<footer class="ln-footer">SOMOS.tech &middot; Starting in Tech v4 &mdash; concept mockup, not final product</footer>
+
+<button class="feedback-btn" type="button" id="feedbackBtn">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F0A947" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"></path></svg>
+  Feedback
+</button>
+
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="js/progress-data.js?v=3"></script>
+<script src="js/common.js?v=4"></script>
+<script src="js/prepare.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apply: You're Ready — SOMOS.tech</title>
+<meta name="description" content="Make your plan, find curated job boards, and claim a badge that's tied to what you actually did.">
+<link rel="stylesheet" href="css/styles.css?v=3">
+<link rel="stylesheet" href="css/launch.css?v=1">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="brand">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#22E2A0" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="6"></rect><path d="M8 12l2.5 2.5L16 9" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    SOMOS.tech
+  </div>
+  <div class="nav-links">
+    <a href="#">Home</a>
+    <a href="#">Community</a>
+    <a href="ai-discovery.html" aria-current="page">Programs</a>
+    <a href="#">Career</a>
+    <a href="#">About</a>
+  </div>
+  <div class="nav-cta"><span class="concept-pill">CONCEPT</span></div>
+</nav>
+
+<div class="switcher" role="navigation" aria-label="Career Journey screens">
+  <a href="index.html">Map</a>
+  <a href="ai-discovery.html">Discovery</a>
+  <a href="compare-careers.html">Compare</a>
+  <a href="career-journey.html">My Journey</a>
+  <a href="living-roadmap.html">Roadmap</a>
+  <a href="prepare.html">Prepare</a>
+  <a href="practice.html">Practice</a>
+  <a href="apply.html" aria-current="page">Apply</a>
+</div>
+
+<header class="ln-header">
+  <div class="ln-top">
+    <div>
+      <span class="eyebrow">CONCEPT &middot; CAREER LAUNCH</span>
+      <h1>Apply: you&rsquo;re ready</h1>
+      <p class="ln-sub">Start applying for Product Operations Manager roles today &mdash; with a resume that actually sounds like you.</p>
+    </div>
+    <div class="ln-meta">
+      <div class="ln-steps" aria-label="Career launch steps">
+        <a class="ln-step" href="prepare.html">1 &middot; Prepare</a>
+        <a class="ln-step" href="practice.html">2 &middot; Practice</a>
+        <a class="ln-step" href="apply.html" aria-current="step">3 &middot; Apply</a>
+      </div>
+      <div class="ln-meta-row">
+        <svg class="ln-ring" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+          <circle cx="8" cy="8" r="6" fill="none" stroke="var(--card-2)" stroke-width="2.5"></circle>
+          <circle cx="8" cy="8" r="6" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round" transform="rotate(-90 8 8)" data-program-ring></circle>
+        </svg>
+        Overall program: <strong data-program-overall>&mdash;%</strong>
+      </div>
+      <div class="ln-meta-row">This step: <strong data-stage-pct="apply">&mdash;%</strong></div>
+    </div>
+  </div>
+</header>
+
+<main class="ln-main">
+
+  <!-- Make your plan -->
+  <section class="ln-card">
+    <div class="ln-card-title">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#8FD6FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+      Make your plan
+    </div>
+    <div class="plan-grid">
+      <div class="plan-box">
+        <div class="plan-label">Your first moves</div>
+        <div class="plan-value">Apply to 3 roles this week &middot; follow up on 2 SOMOS connections</div>
+      </div>
+      <div class="plan-box plan-box-row">
+        <div>
+          <div class="plan-label">Start date</div>
+          <div class="plan-value" id="planDate">&mdash;</div>
+        </div>
+        <button type="button" class="ln-btn ln-btn--small" id="planEdit">Edit</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Job boards -->
+  <section>
+    <div class="ln-label">CURATED BOARDS FOR PRODUCT OPERATIONS MANAGER</div>
+    <div class="boards" id="boards"></div>
+  </section>
+
+  <!-- Tips -->
+  <section class="apply-tips">
+    <div class="apply-tips-title">APPLICATION TIPS</div>
+    <div class="apply-tips-grid">
+      <div>&bull; Apply to 5&ndash;10 jobs per day &mdash; consistency is key</div>
+      <div>&bull; Follow up after 1 week if you haven&rsquo;t heard back</div>
+      <div>&bull; Tailor your resume for each application</div>
+      <div>&bull; Track your applications in one place</div>
+    </div>
+  </section>
+
+  <!-- Badge -->
+  <section class="badge-card" id="badgeCard" aria-labelledby="badgeTitle">
+    <div class="badge-medal" aria-hidden="true">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"></path><path d="M12 17v4"></path><path d="M7 4h10v5a5 5 0 0 1-10 0V4z"></path><path d="M7 6H4a2 2 0 0 0 2 4"></path><path d="M17 6h3a2 2 0 0 1-2 4"></path></svg>
+    </div>
+    <div class="badge-title" id="badgeTitle">Claim your Starting in Tech &mdash; Pathfinder badge</div>
+    <div class="badge-sub" id="badgeSub">This badge means something specific &mdash; here&rsquo;s what you&rsquo;ve actually completed:</div>
+
+    <div class="criteria" id="criteria"></div>
+
+    <div class="badge-count" id="badgeCount"></div>
+    <button type="button" class="ln-btn badge-claim" id="claimBtn" disabled>Claim badge</button>
+  </section>
+
+  <a class="ln-next" href="index.html">Back to your Journey Map &#8594;</a>
+
+</main>
+
+<footer class="ln-footer">SOMOS.tech &middot; Starting in Tech v4 &mdash; concept mockup, not final product</footer>
+
+<button class="feedback-btn" type="button" id="feedbackBtn">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F0A947" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"></path></svg>
+  Feedback
+</button>
+
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="js/progress-data.js?v=3"></script>
+<script src="js/common.js?v=4"></script>
+<script src="js/apply.js?v=1"></script>
+</body>
+</html>

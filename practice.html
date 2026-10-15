@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Practice: Get Interview Ready — SOMOS.tech</title>
+<meta name="description" content="Role-specific interview practice, handed off to SOMOS's Mock Interview program.">
+<link rel="stylesheet" href="css/styles.css?v=3">
+<link rel="stylesheet" href="css/launch.css?v=1">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="brand">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#22E2A0" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="6"></rect><path d="M8 12l2.5 2.5L16 9" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    SOMOS.tech
+  </div>
+  <div class="nav-links">
+    <a href="#">Home</a>
+    <a href="#">Community</a>
+    <a href="ai-discovery.html" aria-current="page">Programs</a>
+    <a href="#">Career</a>
+    <a href="#">About</a>
+  </div>
+  <div class="nav-cta"><span class="concept-pill">CONCEPT</span></div>
+</nav>
+
+<div class="switcher" role="navigation" aria-label="Career Journey screens">
+  <a href="index.html">Map</a>
+  <a href="ai-discovery.html">Discovery</a>
+  <a href="compare-careers.html">Compare</a>
+  <a href="career-journey.html">My Journey</a>
+  <a href="living-roadmap.html">Roadmap</a>
+  <a href="prepare.html">Prepare</a>
+  <a href="practice.html" aria-current="page">Practice</a>
+  <a href="apply.html">Apply</a>
+</div>
+
+<header class="ln-header">
+  <div class="ln-top">
+    <div>
+      <span class="eyebrow">CONCEPT &middot; CAREER LAUNCH</span>
+      <h1>Practice: get interview ready</h1>
+      <p class="ln-sub">Scoped to Product Operations Manager, not a generic question bank. When you&rsquo;re ready to actually practice, this hands off to SOMOS&rsquo;s dedicated Mock Interview program.</p>
+    </div>
+    <div class="ln-meta">
+      <div class="ln-steps" aria-label="Career launch steps">
+        <a class="ln-step" href="prepare.html">1 &middot; Prepare</a>
+        <a class="ln-step" href="practice.html" aria-current="step">2 &middot; Practice</a>
+        <a class="ln-step" href="apply.html">3 &middot; Apply</a>
+      </div>
+      <div class="ln-meta-row">
+        <svg class="ln-ring" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+          <circle cx="8" cy="8" r="6" fill="none" stroke="var(--card-2)" stroke-width="2.5"></circle>
+          <circle cx="8" cy="8" r="6" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round" transform="rotate(-90 8 8)" data-program-ring></circle>
+        </svg>
+        Overall program: <strong data-program-overall>&mdash;%</strong>
+      </div>
+      <div class="ln-meta-row">This step: <strong data-stage-pct="practice">&mdash;%</strong></div>
+    </div>
+  </div>
+</header>
+
+<main class="ln-main">
+
+  <section>
+    <div class="ln-label">LIKELY QUESTIONS FOR YOUR ROLE</div>
+    <div class="q-grid" id="qGrid"></div>
+    <div class="q-count" id="qCount"></div>
+    <p class="q-note">Pulled from your target role and the Product Operations profile in your Career Profile &mdash; not a fixed list.</p>
+  </section>
+
+  <section>
+    <div class="ln-label">CHOOSE YOUR PRACTICE PATH</div>
+    <div class="path-grid">
+      <article class="path-card" id="pathPeer">
+        <div class="path-top">
+          <span class="path-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span>
+          <span class="path-tag path-tag--beta">BETA</span>
+        </div>
+        <div class="path-name">Peer Connect</div>
+        <p class="path-desc">Practice with other SOMOS members actively interviewing for similar roles. Real feedback, real networking.</p>
+        <button type="button" class="ln-btn" data-path="peer">Find interview partners &#8594;</button>
+      </article>
+
+      <article class="path-card path-card--ai" id="pathAi">
+        <div class="path-top">
+          <span class="path-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line></svg></span>
+          <span class="path-tag path-tag--ai">PERSONALIZED</span>
+        </div>
+        <div class="path-name">AI Mock Interview</div>
+        <p class="path-desc">Voice practice with Grace, pre-loaded with your target role and the questions above. Detailed feedback after each session.</p>
+        <button type="button" class="ln-btn ln-btn--primary" data-path="ai">Start practicing &#8594;</button>
+      </article>
+    </div>
+  </section>
+
+  <!-- Handoff preview: what context travels to the existing program -->
+  <section class="ln-card ln-card--raised handoff" id="handoff" hidden aria-live="polite">
+    <div class="ln-label" id="handoffLabel"></div>
+    <div class="ln-card-title" id="handoffTitle"></div>
+    <p class="ln-sub" style="margin:0 0 6px;font-size:13px">So you don&rsquo;t start from zero, this is what we pass along. You can edit or skip any of it on the other side.</p>
+    <ul class="handoff-list" id="handoffList"></ul>
+    <div class="handoff-actions">
+      <button type="button" class="ln-btn ln-btn--primary" id="handoffGo" data-coming-soon="SOMOS Mock Interview program" data-external>Continue to the Mock Interview program</button>
+      <button type="button" class="ln-btn" id="handoffCancel">Not yet</button>
+    </div>
+  </section>
+
+  <p class="q-note" style="text-align:right;margin:0">Already have a mentor from Connect? Ask them for a mock round too &mdash; it counts.</p>
+
+  <a class="ln-next" href="apply.html">Next: Apply &#8594;</a>
+
+</main>
+
+<footer class="ln-footer">SOMOS.tech &middot; Starting in Tech v4 &mdash; concept mockup, not final product</footer>
+
+<button class="feedback-btn" type="button" id="feedbackBtn">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F0A947" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"></path></svg>
+  Feedback
+</button>
+
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="js/progress-data.js?v=3"></script>
+<script src="js/common.js?v=4"></script>
+<script src="js/practice.js?v=1"></script>
+</body>
+</html>

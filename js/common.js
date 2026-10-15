@@ -59,6 +59,10 @@
       var href = el.getAttribute("data-href");
       if (href) { window.location.href = href; return; }
       var screen = el.getAttribute("data-coming-soon");
+      if (el.hasAttribute("data-external")) {
+        showToast("Hands off to another program", screen + " is an existing SOMOS program, so the prototype stops here and the real one picks up with your context.");
+        return;
+      }
       showToast("Not built yet", "The " + screen + " screen is next up — check back soon.");
     });
   });
