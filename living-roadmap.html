@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your Product Operations Roadmap — SOMOS.tech</title>
+<meta name="description" content="The execution layer: every resource, why it matters, and how long it takes.">
+<link rel="stylesheet" href="css/styles.css?v=3">
+<link rel="stylesheet" href="css/roadmap.css?v=1">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="brand">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#22E2A0" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="6"></rect><path d="M8 12l2.5 2.5L16 9" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    SOMOS.tech
+  </div>
+  <div class="nav-links">
+    <a href="#">Home</a>
+    <a href="#">Community</a>
+    <a href="ai-discovery.html" aria-current="page">Programs</a>
+    <a href="#">Career</a>
+    <a href="#">About</a>
+  </div>
+  <div class="nav-cta">
+    <span class="concept-pill">CONCEPT</span>
+  </div>
+</nav>
+
+<div class="switcher" role="navigation" aria-label="Career Journey screens">
+  <a href="index.html">Map</a>
+  <a href="ai-discovery.html">Discovery</a>
+  <a href="compare-careers.html">Compare</a>
+  <a href="career-journey.html">My Journey</a>
+  <a href="living-roadmap.html" aria-current="page">Roadmap</a>
+  <span class="is-locked" data-coming-soon="Prepare">Prepare</span>
+  <span class="is-locked" data-coming-soon="Practice">Practice</span>
+  <span class="is-locked" data-coming-soon="Apply">Apply</span>
+</div>
+
+<header class="rm-header">
+  <div class="rm-header-main">
+    <div class="rm-header-copy">
+      <div class="rm-tags">
+        <span class="eyebrow">CONCEPT</span>
+        <span class="rm-ai-tag">AI GENERATED</span>
+      </div>
+      <h1>Your Product Operations roadmap</h1>
+      <p>The <a href="index.html">Map</a> shows where you&rsquo;re headed. This is how you actually get there &mdash; every resource, why it matters, and how long it takes.</p>
+    </div>
+    <div class="rm-header-side">
+      <div class="rm-progress">
+        <div class="rm-progress-label">Roadmap progress</div>
+        <div class="rm-progress-value" id="rmOverall">&mdash;%</div>
+        <div class="rm-progress-sub" id="rmOverallSub"></div>
+      </div>
+      <button type="button" class="rm-download" id="rmDownload">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Download
+      </button>
+    </div>
+  </div>
+  <div class="rm-program-row">
+    <svg class="rm-program-ring" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+      <circle cx="8" cy="8" r="6" fill="none" stroke="var(--card-2)" stroke-width="2.5"></circle>
+      <circle cx="8" cy="8" r="6" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round" transform="rotate(-90 8 8)" data-program-ring></circle>
+    </svg>
+    Overall program: <strong data-program-overall>&mdash;%</strong>
+  </div>
+</header>
+
+<main class="rm-main">
+
+  <section class="rm-reco" aria-label="AI recommendation">
+    <div class="rm-reco-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg>
+    </div>
+    <p id="rmReco"></p>
+  </section>
+
+  <div class="rm-phases" id="rmPhases"></div>
+
+  <!-- Phase 3: three simple launchers, per the spec — not rich cards -->
+  <section class="rm-phase rm-phase--launch" aria-label="Phase 3, career readiness">
+    <div class="rm-phase-head">
+      <span class="rm-phase-title">Phase 3 &mdash; Career readiness</span>
+      <span class="rm-phase-pct">0%</span>
+    </div>
+    <div class="rm-bar"><div class="rm-bar-fill" style="width:0%"></div></div>
+    <p class="rm-launch-note">Your Career Launch Kit &mdash; three steps, each its own space so nothing feels crammed into one page.</p>
+    <div class="rm-launch-grid">
+      <button type="button" class="rm-launch" data-coming-soon="Prepare">
+        <span class="rm-launch-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M9 15l2 2 4-4"></path></svg></span>
+        <span class="rm-launch-title">1. Prepare</span>
+        <span class="rm-launch-desc">Resume &amp; LinkedIn, already drafted from your journey.</span>
+        <span class="rm-launch-go">Start &#8594;</span>
+      </button>
+      <button type="button" class="rm-launch" data-coming-soon="Practice">
+        <span class="rm-launch-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line></svg></span>
+        <span class="rm-launch-title">2. Practice</span>
+        <span class="rm-launch-desc">Role-specific questions, then Peer Connect or AI Mock Interview.</span>
+        <span class="rm-launch-go">Start &#8594;</span>
+      </button>
+      <button type="button" class="rm-launch" data-coming-soon="Apply">
+        <span class="rm-launch-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"></path><path d="M22 2l-7 20-4-9-9-4 20-7z"></path></svg></span>
+        <span class="rm-launch-title">3. Apply</span>
+        <span class="rm-launch-desc">Job boards, tips, and your Pathfinder badge.</span>
+        <span class="rm-launch-go">Start &#8594;</span>
+      </button>
+    </div>
+  </section>
+
+</main>
+
+<footer class="rm-footer">SOMOS.tech &middot; Starting in Tech v4 &mdash; concept mockup, not final product</footer>
+
+<button class="feedback-btn" type="button" id="feedbackBtn">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F0A947" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"></path></svg>
+  Feedback
+</button>
+
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="js/progress-data.js?v=3"></script>
+<script src="js/common.js?v=3"></script>
+<script src="js/roadmap.js?v=1"></script>
+</body>
+</html>
