@@ -1,3 +1,15 @@
+<div align="center">
+
+<img src="assets/banner.svg" alt="Somos Career Journey" width="100%" />
+
+<a href="https://github.com/RayVazcari"><img src="https://img.shields.io/badge/PORTFOLIO-RayVazcari-5ad7ff?style=for-the-badge&logo=github&logoColor=050a11&labelColor=0b1826" alt="Portfolio" /></a>
+<a href="https://www.linkedin.com/in/rayvazcari/"><img src="https://img.shields.io/badge/LINKEDIN-CONNECT-0b1826?style=for-the-badge&logo=linkedin&logoColor=5ad7ff&labelColor=0b1826&color=0b1826" alt="LinkedIn" /></a>
+<img src="https://img.shields.io/badge/HTML-0b1826?style=for-the-badge&logo=html5&logoColor=ffb347&labelColor=0b1826" alt="HTML" />
+<img src="https://img.shields.io/badge/CSS-0b1826?style=for-the-badge&logo=css3&logoColor=5ad7ff&labelColor=0b1826" alt="CSS" />
+<img src="https://img.shields.io/badge/JAVASCRIPT-0b1826?style=for-the-badge&logo=javascript&logoColor=ffb347&labelColor=0b1826" alt="JAVASCRIPT" />
+
+</div>
+
 # SOMOS.tech — Career Journey (concept prototype)
 
 > **Porting this into the SOMOS.tech site?** Start with [`HANDOFF.md`](HANDOFF.md) (what's real vs. mocked and the rules to keep)
