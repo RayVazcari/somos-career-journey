@@ -115,9 +115,9 @@
    Phones: spans the container edge to edge. ---- */
 .rail {
   position: relative;
-  max-width: 440px;
+  width: 440px;           /* fixed, so it lands in the same spot on every page */
+  max-width: 100%;
   margin: 0 0 18px;
-  view-transition-name: journey-rail; /* lets the Map's mini-map glide into this */
 }
 .rail-list { width: 100%; }
 .rail-node { flex: 1 1 0; min-width: 0; }
@@ -147,36 +147,46 @@
   .rail-node a { height: 44px; }
   .rail-node:not(:last-child)::after { top: 22px; }
 }
-@media (max-width: 640px) { .rail { max-width: none; } }
+@media (max-width: 640px) { .rail { width: 100%; max-width: none; } }
 
 /* ---- Map -> page hand-off ----
-   Clicking a stage on the Map swaps the big map for this overlay copy of
-   the mini-map; the browser then glides it into the real one on the next
-   page (a shared "journey-rail" view-transition name), while the map
-   behind it shrinks and fades. */
+   Clicking a stage on the Map pops a real-size copy of the mini-map up in
+   the middle of the screen (scaled up), then flies it to the exact spot it
+   lives on the next page while the map behind it shrinks away. Because it
+   lands at the same position and size, the next page's real strip takes
+   over invisibly, and the rest of that page then fades up. All of it is
+   driven by shell.js (Web Animations); nothing relies on the browser's
+   cross-page transition support. */
 .rail--morph {
-  position: fixed; z-index: 300;
-  left: 50%; top: 42%;
-  width: min(620px, calc(100vw - 32px)); max-width: none;
-  margin: 0; padding: 22px 26px 18px;
-  transform: translateX(-50%);
-  border-radius: 24px; border: 1px solid var(--border-strong);
-  background-color: rgba(10, 30, 51, 0.94);
-  box-shadow: 0 30px 80px -24px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(34, 226, 160, 0.12);
-  opacity: 0; transition: opacity 200ms ease;
+  position: fixed; z-index: 300; margin: 0; max-width: none;
+  transform-origin: 0 0; opacity: 0; pointer-events: none;
+  view-transition-name: none;
 }
-.rail--morph.is-on { opacity: 1; }
-.rail--morph .rail-node a { height: 44px; }
-.rail--morph .rail-node:not(:last-child)::after { top: 22px; }
-.rail--morph .rail-label { text-align: center; font-size: 13px; margin-top: 4px; }
-.rail--morph .rail-node.is-target a { transform: scale(1.35); color: var(--text); }
+.rail--morph .rail-card {
+  position: absolute; inset: -22px -28px -20px; z-index: -1; border-radius: 24px;
+  background-color: rgba(10, 30, 51, 0.94); border: 1px solid var(--border-strong);
+  box-shadow: 0 30px 80px -24px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(34, 226, 160, 0.12);
+}
+.rail--morph .rail-node.is-target a { color: var(--text); }
 .rail--morph .rail-node.is-target .rn-core { fill: var(--teal); }
+.rail--morph .rail-node.is-target a::before {
+  content: ""; position: absolute; inset: -5px; border-radius: 50%; border: 1.5px solid var(--teal);
+  animation: rail-pulse 1.4s var(--ease-out) infinite;
+}
 
 .is-leaving .hero, .is-leaving main.map, .is-leaving .map-footer {
   opacity: 0; transform: scale(0.94); transform-origin: 50% 30%;
-  transition: opacity 260ms ease, transform 420ms var(--ease-out);
+  transition: opacity 320ms ease, transform 520ms var(--ease-out);
 }
-::view-transition-group(journey-rail) { animation-duration: 520ms; animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* The page you land on: its strip is already in place (it took over from the
+   flying copy), then everything else rises in around it. */
+@keyframes arrive-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+html.is-arriving :is(.eyebrow, .rm-tags, h1, .disc-step, .ln-sub, .cmp-sub, .dash-target, .dash-revisit, .rm-header-copy > p, .rm-download) {
+  animation: arrive-up 620ms var(--ease-out) 80ms both;
+}
+html.is-arriving :is(.prog, .disc-progress) { animation: arrive-up 620ms var(--ease-out) 200ms both; }
+html.is-arriving main { animation: arrive-up 760ms var(--ease-out) 280ms both; }
 /* ---------- Mode chip + menu (top-right of the nav) ------------------- */
 .nav-cta { position: relative; display: flex; align-items: center; gap: 12px; }
 .mode-chip {

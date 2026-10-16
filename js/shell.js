@@ -141,7 +141,7 @@
         '</li>';
     });
     el.innerHTML = '<ul class="rail-list">' + items + '</ul><div class="rail-label" data-rail-label aria-hidden="true"></div>';
-    if (morph) el.setAttribute("aria-hidden", "true");
+    if (morph) { el.setAttribute("aria-hidden", "true"); el.insertAdjacentHTML("afterbegin", '<span class="rail-card"></span>'); }
     return el;
   }
 
@@ -176,15 +176,49 @@
   }
 
   /* ------------------------------------------------------------------
-     Map -> page hand-off. Clicking a stage on the Map shrinks the big map
-     away and brings up a copy of the mini-map with your destination
-     highlighted; the browser then glides it into the real strip on the
-     next page (shared view-transition name "journey-rail"). Browsers
-     without cross-document view transitions simply navigate as before.
+     Map -> page hand-off.
+     1. The big map shrinks and fades behind.
+     2. A real-size copy of the mini-map pops up large in the middle of the
+        screen with your destination highlighted.
+     3. It flies to the exact spot the strip lives on the next page (read
+        from where that strip actually sat last time, or computed from the
+        shared page layout the first time).
+     4. The next page loads with its own strip already in that spot, so it
+        takes over invisibly, and the rest of the page rises in around it.
+     Web Animations drive it directly; no dependence on browser support for
+     cross-page transitions.
      ------------------------------------------------------------------ */
+  var RECT_KEY = "somos.railRect";
+  var ARRIVE_KEY = "somos.arrive";
+
+  /* Remember where the strip sits so the Map can fly to precisely there. */
+  function saveRailRect() {
+    if (!rail) return;
+    var r = rail.getBoundingClientRect();
+    try {
+      sessionStorage.setItem(RECT_KEY, JSON.stringify({
+        vw: document.documentElement.clientWidth,
+        l: r.left, t: r.top + window.scrollY, w: r.width
+      }));
+    } catch (e) { /* storage blocked: the computed fallback is used */ }
+  }
+
+  function destRect() {
+    var vw = document.documentElement.clientWidth;
+    try {
+      var saved = JSON.parse(sessionStorage.getItem(RECT_KEY) || "null");
+      if (saved && saved.vw === vw) return { l: saved.l, t: saved.t, w: saved.w };
+    } catch (e) { /* fall through */ }
+    // First visit: same maths as the shared page layout (1160px column, fluid padding)
+    var pad = Math.min(40, Math.max(16, window.innerWidth * 0.04));
+    var col = Math.min(1160, vw);
+    var l = (vw - col) / 2 + pad;
+    var inner = col - pad * 2;
+    return { l: l, t: 88, w: vw <= 640 ? inner : Math.min(440, inner) };
+  }
+
   function setupMapHandoff() {
-    if (file !== "index.html" || reduceMotion) return;
-    if (!("CSSViewTransitionRule" in window)) return;
+    if (file !== "index.html" || reduceMotion || !document.documentElement.animate) return;
 
     var leaving = false;
     document.addEventListener("click", function (e) {
@@ -199,18 +233,58 @@
       e.stopPropagation(); // keep common.js's plain navigation from firing first
       leaving = true;
 
+      var dest = destRect();
+      var vw = document.documentElement.clientWidth;
+
       var m = makeRail(null, true);
+      m.style.left = dest.l + "px";
+      m.style.top = dest.t + "px";
+      m.style.width = dest.w + "px";
       document.body.appendChild(m);
       renderRail(m);
+
       var label = m.querySelector("[data-rail-label]");
+      var p = 0;
       if (target) {
         var li = m.querySelector('[data-key="' + target.key + '"]');
         if (li) li.classList.add("is-target");
+        p = S.pct(target.pctKey || target.key);
         label.innerHTML = "Taking you to <b>" + target.label + "</b>";
       }
+
+      // Where it starts: scaled up, centred a little above the middle of the screen
+      var h = m.offsetHeight;
+      var s = Math.min(1.45, (vw - 24) / dest.w);
+      var dx = vw / 2 - (dest.w * s) / 2 - dest.l;
+      var dy = window.innerHeight * 0.42 - (h * s) / 2 - dest.t;
+      var from = "translate(" + dx + "px," + dy + "px) scale(" + s + ")";
+      var DUR = 1000;           // pop in (0–22%), hold (to 38%), fly (38–100%)
+      var FLY = "cubic-bezier(0.22, 1, 0.36, 1)";
+
       document.body.classList.add("is-leaving");
-      requestAnimationFrame(function () { requestAnimationFrame(function () { m.classList.add("is-on"); }); });
-      setTimeout(function () { window.location.href = href; }, 560);
+      try { sessionStorage.setItem(ARRIVE_KEY, "1"); } catch (err) { /* ignore */ }
+
+      var move = m.animate([
+        { transform: from, opacity: 0, offset: 0 },
+        { transform: from, opacity: 1, offset: 0.22, easing: "linear" },
+        { transform: from, opacity: 1, offset: 0.38, easing: FLY },
+        { transform: "translate(0px,0px) scale(1)", opacity: 1, offset: 1 }
+      ], { duration: DUR, fill: "forwards" });
+
+      // The card behind it dissolves as it settles, leaving just the strip
+      var card = m.querySelector(".rail-card");
+      if (card) card.animate([
+        { opacity: 1, offset: 0 }, { opacity: 1, offset: 0.5 }, { opacity: 0, offset: 1 }
+      ], { duration: DUR, fill: "forwards" });
+
+      // Once it is on its way, the label stops announcing and says where you'll be
+      if (target) setTimeout(function () {
+        label.innerHTML = "You are here: <b>" + target.label + "</b><em>" + p + "%</em>";
+      }, DUR * 0.7);
+
+      var go = function () { window.location.href = href; };
+      move.onfinish = go;
+      setTimeout(go, DUR + 400); // safety net if the animation never reports finished
     }, true);
 
     // Back-button (bfcache) should land on a normal Map, not mid-exit
@@ -220,6 +294,16 @@
       document.body.classList.remove("is-leaving");
       document.querySelectorAll(".rail--morph").forEach(function (n) { n.remove(); });
     });
+  }
+
+  /* The landing page: remember where its strip sits, then let the rest of
+     the page finish rising in and clear the arrival flag. */
+  function settleArrival() {
+    saveRailRect();
+    window.addEventListener("load", saveRailRect); // re-measure once fonts/layout have settled
+    var arriving = document.documentElement.classList.contains("is-arriving");
+    try { sessionStorage.removeItem(ARRIVE_KEY); } catch (e) { /* ignore */ }
+    if (arriving) setTimeout(function () { document.documentElement.classList.remove("is-arriving"); }, 1600);
   }
   /* ------------------------------------------------------------------
      Mode chip + menu
@@ -347,6 +431,7 @@
   buildRail();
   buildChip();
   setupMapHandoff();
+  settleArrival();
   renderSlots();
   renderRail();
   maybePicker();
