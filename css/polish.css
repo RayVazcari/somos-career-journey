@@ -220,3 +220,18 @@ h1, .picker h2 { letter-spacing: -0.02em; font-weight: 800; }
   .cmp-toggle, .dash-revisit, .cmp-feedback-head, .missed-head, .brand-row, .criterion, .q-check { min-height: 44px; }
   .dash-revisit { display: inline-flex; align-items: center; }
 }
+
+/* ---------- One page width everywhere ----------------------------------
+   Headers and content share a single column width on every screen, so the
+   journey strip, title and progress card land in exactly the same place
+   when you move between pages. */
+.disc-header, .disc-main, .cmp-header, .cmp-main, .dash-header, .dash-main,
+.rm-header, .rm-main, .ln-header, .ln-main { max-width: 1160px; }
+.paper { max-width: 860px; }
+.disc-header, .disc-main, .cmp-header, .cmp-main, .dash-header, .dash-main,
+.rm-header, .rm-main, .ln-header, .ln-main {
+  padding-left: clamp(16px, 4vw, 40px); padding-right: clamp(16px, 4vw, 40px);
+}
+
+/* Reserve the scrollbar's space so short pages don't sit 8px off long ones */
+html { scrollbar-gutter: stable; }

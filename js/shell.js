@@ -105,7 +105,8 @@
   }
 
   /* ------------------------------------------------------------------
-     Journey rail (mini-map)
+     Journey rail (mini-map) — a compact horizontal strip at the top-left
+     of every page header, level with the title.
      ------------------------------------------------------------------ */
   var rail = null;
   var RC = 2 * Math.PI * 11;
@@ -115,22 +116,20 @@
     return null;
   }
 
-  function buildRail() {
-    if (file === "index.html" || file === "") return; // the Map is the full-size version of this
-    var here = currentKey();
-    rail = document.createElement("nav");
-    rail.className = "rail";
-    rail.setAttribute("aria-label", "Journey map");
+  function makeRail(here, morph) {
+    var el = document.createElement("nav");
+    el.className = "rail" + (morph ? " rail--morph" : "");
+    el.setAttribute("aria-label", "Journey map");
 
     var items = '<li class="rail-node rail-map"><a href="index.html" aria-label="Back to the journey map">' +
       '<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"></path><path d="M5 10v10h14V10"></path></svg>' +
       '<span class="rail-tip"><b>Journey map</b></span></a></li>';
 
     NODES.forEach(function (n) {
-      var isHere = n.key === here || (here === "compare" && n.key === "goal" && false);
+      var isHere = n.key === here;
       items +=
         '<li class="rail-node' + (isHere ? " is-here" : "") + '" data-key="' + n.key + '">' +
-          '<a href="' + n.href + '"' + (isHere ? ' aria-current="page"' : "") + '>' +
+          '<a href="' + n.href + '"' + (isHere ? ' aria-current="page"' : "") + (morph ? ' tabindex="-1"' : "") + '>' +
             '<svg class="rail-ring" width="30" height="30" viewBox="0 0 30 30" aria-hidden="true">' +
               '<circle class="rn-track" cx="15" cy="15" r="11" stroke-width="3"></circle>' +
               '<circle class="rn-fill" cx="15" cy="15" r="11" stroke-width="3" transform="rotate(-90 15 15)" stroke-dasharray="' + RC + '" stroke-dashoffset="' + RC + '"></circle>' +
@@ -141,17 +140,29 @@
           '</a>' +
         '</li>';
     });
-    rail.innerHTML = '<ul class="rail-list">' + items + '</ul><div class="rail-label" data-rail-label aria-hidden="true"></div>';
-
-    var nav = document.querySelector(".topnav");
-    var oldSwitcher = document.querySelector(".switcher");
-    if (oldSwitcher) oldSwitcher.remove();
-    nav.parentNode.insertBefore(rail, nav.nextSibling);
+    el.innerHTML = '<ul class="rail-list">' + items + '</ul><div class="rail-label" data-rail-label aria-hidden="true"></div>';
+    if (morph) el.setAttribute("aria-hidden", "true");
+    return el;
   }
 
-  function renderRail() {
-    if (!rail) return;
-    rail.querySelectorAll("[data-key]").forEach(function (li) {
+  function buildRail() {
+    if (file === "index.html" || file === "") return; // the Map is the full-size version of this
+    rail = makeRail(currentKey(), false);
+
+    var oldSwitcher = document.querySelector(".switcher");
+    if (oldSwitcher) oldSwitcher.remove();
+
+    // Top-left of the header, level with the page title
+    var h1 = document.querySelector("h1");
+    var host = h1 && h1.parentElement;
+    if (host) host.insertBefore(rail, host.firstChild);
+    else document.querySelector(".topnav").insertAdjacentElement("afterend", rail);
+  }
+
+  function renderRail(el) {
+    el = el || rail;
+    if (!el) return;
+    el.querySelectorAll("[data-key]").forEach(function (li) {
       var n = NODES.filter(function (x) { return x.key === li.getAttribute("data-key"); })[0];
       var p = S.pct(n.pctKey || n.key);
       li.classList.toggle("is-done", p === 100);
@@ -159,11 +170,57 @@
       li.querySelector("[data-tip]").textContent = p + "%";
       li.querySelector("a").setAttribute("aria-label", n.label + ", " + p + " percent complete");
       if (li.classList.contains("is-here")) {
-        rail.querySelector("[data-rail-label]").innerHTML = "You are here: <b>" + n.label + "</b><em>" + p + "%</em>";
+        el.querySelector("[data-rail-label]").innerHTML = "You are here: <b>" + n.label + "</b><em>" + p + "%</em>";
       }
     });
   }
 
+  /* ------------------------------------------------------------------
+     Map -> page hand-off. Clicking a stage on the Map shrinks the big map
+     away and brings up a copy of the mini-map with your destination
+     highlighted; the browser then glides it into the real strip on the
+     next page (shared view-transition name "journey-rail"). Browsers
+     without cross-document view transitions simply navigate as before.
+     ------------------------------------------------------------------ */
+  function setupMapHandoff() {
+    if (file !== "index.html" || reduceMotion) return;
+    if (!("CSSViewTransitionRule" in window)) return;
+
+    var leaving = false;
+    document.addEventListener("click", function (e) {
+      var el = e.target.closest && e.target.closest("[data-href]");
+      if (!el || leaving) return;
+      var href = el.getAttribute("data-href");
+      if (!href) return;
+      var pageFile = href.split("#")[0];
+      var target = NODES.filter(function (n) { return n.pages.indexOf(pageFile) > -1; })[0];
+
+      e.preventDefault();
+      e.stopPropagation(); // keep common.js's plain navigation from firing first
+      leaving = true;
+
+      var m = makeRail(null, true);
+      document.body.appendChild(m);
+      renderRail(m);
+      var label = m.querySelector("[data-rail-label]");
+      if (target) {
+        var li = m.querySelector('[data-key="' + target.key + '"]');
+        if (li) li.classList.add("is-target");
+        label.innerHTML = "Taking you to <b>" + target.label + "</b>";
+      }
+      document.body.classList.add("is-leaving");
+      requestAnimationFrame(function () { requestAnimationFrame(function () { m.classList.add("is-on"); }); });
+      setTimeout(function () { window.location.href = href; }, 560);
+    }, true);
+
+    // Back-button (bfcache) should land on a normal Map, not mid-exit
+    window.addEventListener("pageshow", function (e) {
+      if (!e.persisted) return;
+      leaving = false;
+      document.body.classList.remove("is-leaving");
+      document.querySelectorAll(".rail--morph").forEach(function (n) { n.remove(); });
+    });
+  }
   /* ------------------------------------------------------------------
      Mode chip + menu
      ------------------------------------------------------------------ */
@@ -289,6 +346,7 @@
   /* ------------------------------------------------------------------ */
   buildRail();
   buildChip();
+  setupMapHandoff();
   renderSlots();
   renderRail();
   maybePicker();

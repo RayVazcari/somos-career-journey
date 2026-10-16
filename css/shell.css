@@ -110,57 +110,73 @@
 .rail-node a:hover .rail-tip, .rail-node a:focus-visible .rail-tip,
 .rail-node.is-here .rail-tip { opacity: 1; transform: none; }
 
-/* ---- Wide screens: a quiet vertical map pinned to the left edge ---- */
-@media (min-width: 1180px) {
-  .rail {
-    position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
-    padding: 14px 9px; border-radius: 26px;
-    border: 1px solid var(--border);
-    background-color: rgba(10, 30, 51, 0.62);
-    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-  }
-  .rail-list { flex-direction: column; gap: var(--rail-gap); }
-  .rail-node:not(:last-child)::after {
-    left: 50%; top: 30px; width: 2px; height: var(--rail-gap); margin-left: -1px;
-  }
-  .rail-tip { left: calc(100% + 12px); top: 50%; margin-top: -16px; transform: translateX(-6px); }
-  .rail-label { display: none; }
-  .rail-list::before {
-    content: "JOURNEY"; position: absolute; top: -9px; left: 50%; transform: translateX(-50%);
-    padding: 0 6px; font-size: 11px; font-weight: 700; letter-spacing: 1.4px; color: var(--text-3);
-    background: transparent;
-  }
+/* ---- Placement: a compact horizontal map at the top-left of every page,
+   level with the page title; the "you are here" readout sits just below.
+   Phones: spans the container edge to edge. ---- */
+.rail {
+  position: relative;
+  max-width: 440px;
+  margin: 0 0 18px;
+  view-transition-name: journey-rail; /* lets the Map's mini-map glide into this */
 }
-@media (min-width: 1180px) and (max-height: 760px) {
-  .rail { --rail-gap: 22px; padding: 10px 7px; }
+.rail-list { width: 100%; }
+.rail-node { flex: 1 1 0; min-width: 0; }
+.rail-node:last-child { flex: 0 0 auto; }
+.rail-node:not(:last-child)::after { top: 18px; left: 30px; right: 0; height: 2px; margin-top: -1px; }
+.rail-node a { width: 30px; height: 36px; }
+.rail-label { margin-top: 2px; font-size: 12.5px; color: var(--text-3); }
+.rail-label b { color: var(--text); font-weight: 700; }
+.rail-label em { font-style: normal; color: var(--teal); font-weight: 700; margin-left: 6px; font-variant-numeric: tabular-nums; }
+
+/* hover names (mouse only; a phone has the label line instead) */
+.rail-tip { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .rail-tip {
+    display: block; top: calc(100% - 2px); left: 50%; z-index: 5;
+    transform: translate(-50%, -4px);
+  }
+  .rail-node a:hover .rail-tip, .rail-node a:focus-visible .rail-tip { opacity: 1; transform: translate(-50%, 0); }
+  .rail-node.is-here .rail-tip { opacity: 0; }  /* the label line already says where you are */
+  .rail-node.is-here a:hover .rail-tip { opacity: 1; }
+  .rail-node:nth-last-child(-n+2) .rail-tip { left: auto; right: 0; transform: translate(0, -4px); }
+  .rail-node:nth-last-child(-n+2) a:hover .rail-tip,
+  .rail-node:nth-last-child(-n+2) a:focus-visible .rail-tip { transform: translate(0, 0); }
 }
 
-/* ---- Narrower screens: the same map, laid flat under the nav ----
-   Phones: spans the full width edge to edge. Tablets: same strip,
-   centered with a sensible maximum so it never stretches absurdly. */
-@media (max-width: 1179px) {
-  .rail {
-    position: sticky; top: var(--nav-h);
-    padding: 2px 16px 6px;
-    border-bottom: 1px solid var(--border);
-    background-color: rgba(10, 30, 51, 0.86);
-    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-  }
-  .rail-list { width: 100%; max-width: 640px; margin: 0 auto; }
-  .rail-node { flex: 1 1 0; min-width: 0; }
-  .rail-node:last-child { flex: 0 0 auto; }
-  .rail-node:not(:last-child)::after {
-    top: 22px; left: 30px; right: 0; height: 2px; margin-top: -1px;
-  }
-  .rail-node a { width: 30px; height: 44px; } /* 44px-tall hit area, same visual size */
-  .rail-tip { display: none; }
-  .rail-label {
-    max-width: 640px; margin: 0 auto; text-align: center;
-    font-size: 12px; color: var(--text-3);
-  }
-  .rail-label b { color: var(--text); font-weight: 700; }
-  .rail-label em { font-style: normal; color: var(--teal); font-weight: 700; margin-left: 6px; font-variant-numeric: tabular-nums; }
+@media (pointer: coarse), (max-width: 760px) {
+  .rail-node a { height: 44px; }
+  .rail-node:not(:last-child)::after { top: 22px; }
 }
+@media (max-width: 640px) { .rail { max-width: none; } }
+
+/* ---- Map -> page hand-off ----
+   Clicking a stage on the Map swaps the big map for this overlay copy of
+   the mini-map; the browser then glides it into the real one on the next
+   page (a shared "journey-rail" view-transition name), while the map
+   behind it shrinks and fades. */
+.rail--morph {
+  position: fixed; z-index: 300;
+  left: 50%; top: 42%;
+  width: min(620px, calc(100vw - 32px)); max-width: none;
+  margin: 0; padding: 22px 26px 18px;
+  transform: translateX(-50%);
+  border-radius: 24px; border: 1px solid var(--border-strong);
+  background-color: rgba(10, 30, 51, 0.94);
+  box-shadow: 0 30px 80px -24px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(34, 226, 160, 0.12);
+  opacity: 0; transition: opacity 200ms ease;
+}
+.rail--morph.is-on { opacity: 1; }
+.rail--morph .rail-node a { height: 44px; }
+.rail--morph .rail-node:not(:last-child)::after { top: 22px; }
+.rail--morph .rail-label { text-align: center; font-size: 13px; margin-top: 4px; }
+.rail--morph .rail-node.is-target a { transform: scale(1.35); color: var(--text); }
+.rail--morph .rail-node.is-target .rn-core { fill: var(--teal); }
+
+.is-leaving .hero, .is-leaving main.map, .is-leaving .map-footer {
+  opacity: 0; transform: scale(0.94); transform-origin: 50% 30%;
+  transition: opacity 260ms ease, transform 420ms var(--ease-out);
+}
+::view-transition-group(journey-rail) { animation-duration: 520ms; animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
 /* ---------- Mode chip + menu (top-right of the nav) ------------------- */
 .nav-cta { position: relative; display: flex; align-items: center; gap: 12px; }
 .mode-chip {
