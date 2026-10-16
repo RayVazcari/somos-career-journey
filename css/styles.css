@@ -24,7 +24,7 @@
   --text: #F3F7F9;
   --text-2: #A8BBC8;
   --text-3: #889CAD; /* AA on bg/card/card-2 (was #718496, 3.4:1 on card-2) */
-  --text-4: #889CAD; /* was #4A5E6D (2:1) — alias so no text falls below AA */
+  --text-4: #889CAD; /* alias of text-3 so no text falls below AA */
 
   /* Type */
   --font: system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -313,7 +313,7 @@ svg { display: block; }
 }
 
 .stage-label {
-  font-size: 10.5px;
+  font-size: 11px;
   letter-spacing: 1.4px;
   font-weight: 700;
   color: var(--text-3);
@@ -573,7 +573,7 @@ svg { display: block; }
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.5px;
   background: var(--teal);

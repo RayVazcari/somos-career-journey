@@ -141,7 +141,7 @@
           '</a>' +
         '</li>';
     });
-    rail.innerHTML = '<ul class="rail-list">' + items + '</ul>';
+    rail.innerHTML = '<ul class="rail-list">' + items + '</ul><div class="rail-label" data-rail-label aria-hidden="true"></div>';
 
     var nav = document.querySelector(".topnav");
     var oldSwitcher = document.querySelector(".switcher");
@@ -158,6 +158,9 @@
       li.querySelector(".rn-fill").style.strokeDashoffset = String(RC * (1 - p / 100));
       li.querySelector("[data-tip]").textContent = p + "%";
       li.querySelector("a").setAttribute("aria-label", n.label + ", " + p + " percent complete");
+      if (li.classList.contains("is-here")) {
+        rail.querySelector("[data-rail-label]").innerHTML = "You are here: <b>" + n.label + "</b><em>" + p + "%</em>";
+      }
     });
   }
 
@@ -289,6 +292,29 @@
   renderSlots();
   renderRail();
   maybePicker();
+
+  /* ------------------------------------------------------------------
+     Section headings for assistive tech. The visual labels already read
+     as headings; this gives them the matching role so a screen-reader
+     user gets a real outline of the page. Re-applied when content
+     re-renders.
+     ------------------------------------------------------------------ */
+  var H_SEL = ".track-name, .rm-phase-title, .ln-card-title, .ln-label, .profile-title, .profile-card-title, " +
+    ".role-name, .missed-title, .cmp-feedback-title, .badge-title, .apply-tips-title";
+  function patchHeadings() {
+    document.querySelectorAll(H_SEL).forEach(function (e) {
+      if (e.hasAttribute("role") || /^H[1-6]$/.test(e.tagName)) return;
+      e.setAttribute("role", "heading");
+      e.setAttribute("aria-level", e.classList.contains("ln-label") && e.closest(".ln-card") ? "3" : "2");
+    });
+  }
+  patchHeadings();
+  var headingQueued = false;
+  new MutationObserver(function () {
+    if (headingQueued) return;
+    headingQueued = true;
+    requestAnimationFrame(function () { headingQueued = false; patchHeadings(); });
+  }).observe(document.body, { childList: true, subtree: true });
 
   document.addEventListener("somos:change", function () {
     renderSlots();

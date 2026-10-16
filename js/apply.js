@@ -22,17 +22,17 @@
      started your search. */
   var ROLE = encodeURIComponent(roleName);
   var BOARDS = [
-    { name: "LinkedIn Jobs", url: "https://www.linkedin.com/jobs/search/?keywords=" + ROLE, bg: "rgba(10,102,194,0.15)", fg: "#4DA3FF",
+    { name: "LinkedIn Jobs", url: "https://www.linkedin.com/jobs/search/?keywords=" + ROLE, bg: "rgba(34,226,160,0.12)", fg: "#22E2A0",
       icon: '<path d="M4.98 3.5C4.98 4.88 3.9 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V23h-4V8zm7.5 0h3.8v2.05h.05c.53-1 1.83-2.05 3.77-2.05C19.6 8 21 10.15 21 14.05V23h-4v-8.1c0-1.93-.03-4.4-2.68-4.4-2.68 0-3.1 2.1-3.1 4.27V23h-4V8z"></path>', fill: true },
-    { name: "Indeed", url: "https://www.indeed.com/jobs?q=" + ROLE, bg: "rgba(45,127,249,0.15)", fg: "#5B9BFF",
+    { name: "Indeed", url: "https://www.indeed.com/jobs?q=" + ROLE, bg: "rgba(34,226,160,0.12)", fg: "#22E2A0",
       icon: '<rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>' },
-    { name: "Glassdoor", url: "https://www.glassdoor.com/Job/index.htm", bg: "rgba(34,226,160,0.15)", fg: "#22E2A0",
+    { name: "Glassdoor", url: "https://www.glassdoor.com/Job/index.htm", bg: "rgba(34,226,160,0.12)", fg: "#22E2A0",
       icon: '<polygon points="12 2 15 9 22 9.5 17 14.5 18.5 21.5 12 18 5.5 21.5 7 14.5 2 9.5 9 9 12 2"></polygon>' },
-    { name: "SimplyHired", url: "https://www.simplyhired.com/search?q=" + ROLE, bg: "rgba(147,112,219,0.15)", fg: "#B49CE0",
+    { name: "SimplyHired", url: "https://www.simplyhired.com/search?q=" + ROLE, bg: "rgba(34,226,160,0.12)", fg: "#22E2A0",
       icon: '<rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>' },
-    { name: "ZipRecruiter", url: "https://www.ziprecruiter.com/jobs-search?search=" + ROLE, bg: "rgba(34,226,160,0.15)", fg: "#22E2A0",
+    { name: "ZipRecruiter", url: "https://www.ziprecruiter.com/jobs-search?search=" + ROLE, bg: "rgba(34,226,160,0.12)", fg: "#22E2A0",
       icon: '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>' },
-    { name: "Wellfound", url: "https://wellfound.com/jobs", bg: "rgba(240,111,86,0.15)", fg: "#F0836A",
+    { name: "Wellfound", url: "https://wellfound.com/jobs", bg: "rgba(34,226,160,0.12)", fg: "#22E2A0",
       icon: '<path d="M4 4l16 8-16 8V4z"></path>' }
   ];
 

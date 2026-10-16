@@ -67,6 +67,15 @@
     });
   });
 
+  /* The top nav (Home / Community / Career / About) belongs to the wider
+     SOMOS.tech site; this prototype covers the Career Journey only. */
+  document.querySelectorAll('.nav-links a[href="#"]').forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      showToast("Site navigation", "That’s the wider SOMOS.tech site — this prototype covers the Career Journey only.");
+    });
+  });
+
   var feedbackBtn = document.getElementById("feedbackBtn");
   if (feedbackBtn) {
     feedbackBtn.addEventListener("click", function () {

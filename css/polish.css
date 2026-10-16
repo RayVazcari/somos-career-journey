@@ -177,3 +177,46 @@ h1, h2, .picker h2, .picker-title, .prog-ring-val, .path-summary-value,
 }
 h1, .picker h2 { letter-spacing: -0.02em; font-weight: 800; }
 .prog-ring-val, .path-summary-value { font-weight: 800; letter-spacing: -0.03em; }
+
+/* ---------- Targets & touch -------------------------------------------
+   Every control gets at least WCAG 2.2's 24px target on desktop; on touch
+   and small screens the main ones grow to 44px and form fields go to 16px
+   (below that, iOS zooms the page on focus). */
+.nav-links a { padding: 10px 10px; border-radius: 8px; }
+.ln-btn--small { min-height: 32px; }
+.criterion-link, .ln-next, .brand-review { display: inline-flex; align-items: center; min-height: 32px; }
+.q-link, .role-link, .link-btn { min-height: 32px; }
+
+@media (pointer: coarse), (max-width: 760px) {
+  .ln-btn, .role-btn, .chat-send, .cmp-continue, .next-step-btn, .chip, .tab, .mode-chip,
+  .q-link, .role-link, .criterion-link, .ln-next, .brand-review, .link-btn, .toast-close,
+  .picker-card, .mode-menu button, .rm-download, .cmp-fb-send, .chat-cta-btn { min-height: 44px; }
+  .q-check { min-height: 44px; }
+  .q-check input { width: 20px; height: 20px; }
+  input, textarea, select { font-size: 16px !important; }
+  .rail-node a { width: 34px; height: 34px; }
+  .rail-node:not(:last-child)::after { top: 17px; left: 34px; }
+}
+
+/* ---------- Reduced motion: one safety net for everything -------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.skip-link { min-height: 44px; display: inline-flex; align-items: center; }
+
+/* Phones: Feedback becomes a compact icon button so it never hides content */
+@media (max-width: 640px) {
+  .feedback-btn { width: 44px; height: 44px; padding: 0; justify-content: center; font-size: 0; gap: 0; border-radius: 50%; }
+  .feedback-btn svg { width: 18px; height: 18px; }
+}
+
+@media (pointer: coarse), (max-width: 760px) {
+  .cmp-toggle, .dash-revisit, .cmp-feedback-head, .missed-head, .brand-row, .criterion, .q-check { min-height: 44px; }
+  .dash-revisit { display: inline-flex; align-items: center; }
+}
