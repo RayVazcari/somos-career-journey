@@ -1,0 +1,174 @@
+/* ==========================================================================
+   SOMOS.tech — Career Journey
+   Polish layer: atmosphere, surface depth, micro-interactions.
+   Additive on purpose — loaded last on every page, removes cleanly.
+   Rule of thumb: nothing here adds a new colour; it only adds light,
+   depth and response.
+   ========================================================================== */
+
+/* ---------- Atmosphere ------------------------------------------------- */
+/* Sits above the canvas background but below all content (z-index -1). */
+.atmos, .atmos__grain {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Two soft pools of light that drift a few vw as you scroll, so long
+   pages feel lit rather than painted. --p is 0..1 scroll progress. */
+.atmos::before,
+.atmos::after {
+  content: "";
+  position: absolute;
+  width: 90vmax;
+  height: 90vmax;
+  border-radius: 50%;
+  will-change: transform;
+}
+.atmos::before {
+  top: -48vmax; left: -30vmax;
+  background: radial-gradient(closest-side, rgba(34, 226, 160, 0.075), transparent 70%);
+  transform: translate3d(calc(var(--p, 0) * 22vw), calc(var(--p, 0) * 70vh), 0);
+}
+.atmos::after {
+  bottom: -55vmax; right: -35vmax;
+  background: radial-gradient(closest-side, rgba(240, 169, 71, 0.045), transparent 70%);
+  transform: translate3d(calc(var(--p, 0) * -12vw), calc(var(--p, 0) * -35vh), 0);
+}
+
+/* Edge vignette: pulls the eye toward the centre column. */
+.atmos {
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 120% 90% at 50% 38%, transparent 52%, rgba(3, 10, 18, 0.42) 100%);
+}
+
+/* Film grain. Kills gradient banding on dark navy and gives the flat
+   fields a paper-like tooth. ~3% — you feel it more than see it. */
+.atmos__grain {
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+/* ---------- Surface depth --------------------------------------------- */
+/* Every card-like surface gets: a faint top-lit sheen, a 1px light edge
+   along the top, and a cursor spotlight (driven by polish.js). Only
+   background-image is set, so each page's own colours/borders stand. */
+.ln-card, .tip, .q-card, .path-card, .board, .apply-tips, .plan-box,
+.rm-phase, .rm-launch, .track-card, .profile-card, .profile-panel,
+.chat-panel, .role-card, .fork-card {
+  --spot: 0;
+  background-image:
+    radial-gradient(280px circle at var(--mx, 50%) var(--my, 0%), rgba(34, 226, 160, calc(0.10 * var(--spot))), transparent 70%),
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12) 50%, transparent),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 60%);
+  background-size: auto, 100% 1px, auto;
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0, 0 0;
+}
+
+/* ---------- Tabular numbers (no jitter during count-up) --------------- */
+[data-program-overall], [data-stage-pct], .pct-label, .rm-progress-value,
+.rm-phase-pct, .track-pct {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Focus ------------------------------------------------------ */
+:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 3px;
+}
+:focus:not(:focus-visible) { outline: none; }
+
+/* ---------- Skip link -------------------------------------------------- */
+.skip-link {
+  position: fixed;
+  top: 10px; left: 10px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: var(--teal);
+  color: #06251C;
+  font-weight: 700;
+  font-size: 14px;
+  transform: translateY(-160%);
+  transition: transform 220ms var(--ease-out);
+}
+.skip-link:focus { transform: translateY(0); outline-offset: 2px; }
+
+/* ---------- Press + arrow micro-interactions --------------------------- */
+.ln-btn, .ln-next, .rm-launch, .path-card, .brand-review, .rm-download {
+  -webkit-tap-highlight-color: transparent;
+}
+.ln-btn:active, .ln-next:active, .rm-launch:active, .brand-review:active, .rm-download:active {
+  transform: scale(0.975);
+}
+.arr {
+  display: inline-block;
+  transition: transform 260ms var(--ease-out);
+}
+.ln-btn:hover .arr, .ln-next:hover .arr, .rm-launch:hover .arr,
+.brand-review:hover .arr, .ln-btn:focus-visible .arr, .ln-next:focus-visible .arr,
+.rm-launch:focus-visible .arr, .brand-review:focus-visible .arr {
+  transform: translateX(4px);
+}
+
+/* ---------- Checkbox "settle" when you complete something -------------- */
+.track-checkbox, .rm-item-icon { position: relative; }
+@keyframes box-pop {
+  0%   { transform: scale(1); }
+  28%  { transform: scale(0.84); }
+  62%  { transform: scale(1.13); }
+  100% { transform: scale(1); }
+}
+@keyframes box-ring {
+  from { opacity: 0.7; transform: scale(0.85); }
+  to   { opacity: 0;   transform: scale(2); }
+}
+.just-checked .track-checkbox,
+.just-checked .rm-item-icon,
+.just-checked.brand-row > svg {
+  animation: box-pop 520ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.just-checked .track-checkbox::after,
+.just-checked .rm-item-icon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1.5px solid var(--teal);
+  pointer-events: none;
+  animation: box-ring 620ms var(--ease-out) forwards;
+}
+
+/* ---------- Page-to-page: cross-document view transition --------------- */
+/* Chromium/Safari: header chrome stays put, the page crossfades under it
+   and the current-screen pill glides to its new place in the switcher.
+   Browsers without support simply navigate as before. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+  .topnav { view-transition-name: topnav; }
+  .switcher { view-transition-name: switcher; }
+  .switcher a[aria-current="page"] { view-transition-name: switcher-pill; }
+  ::view-transition-old(root), ::view-transition-new(root) {
+    animation-duration: 240ms;
+    animation-timing-function: var(--ease-out);
+  }
+  ::view-transition-group(switcher-pill) {
+    animation-duration: 420ms;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+/* ---------- Reduced motion -------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .atmos::before, .atmos::after { transform: none; }
+  .arr, .skip-link { transition: none; }
+  .just-checked .track-checkbox,
+  .just-checked .rm-item-icon,
+  .just-checked.brand-row > svg,
+  .just-checked .track-checkbox::after,
+  .just-checked .rm-item-icon::after { animation: none; }
+}

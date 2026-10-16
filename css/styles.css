@@ -23,8 +23,8 @@
   /* Text */
   --text: #F3F7F9;
   --text-2: #A8BBC8;
-  --text-3: #718496;
-  --text-4: #4A5E6D;
+  --text-3: #889CAD; /* AA on bg/card/card-2 (was #718496, 3.4:1 on card-2) */
+  --text-4: #889CAD; /* was #4A5E6D (2:1) — alias so no text falls below AA */
 
   /* Type */
   --font: system-ui, -apple-system, "Segoe UI", sans-serif;
