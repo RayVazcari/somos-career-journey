@@ -28,12 +28,12 @@
 }
 .atmos::before {
   top: -48vmax; left: -30vmax;
-  background: radial-gradient(closest-side, rgba(34, 226, 160, 0.075), transparent 70%);
+  background: radial-gradient(closest-side, rgba(34, 226, 160, 0.15), transparent 70%);
   transform: translate3d(calc(var(--p, 0) * 22vw), calc(var(--p, 0) * 70vh), 0);
 }
 .atmos::after {
   bottom: -55vmax; right: -35vmax;
-  background: radial-gradient(closest-side, rgba(240, 169, 71, 0.045), transparent 70%);
+  background: radial-gradient(closest-side, rgba(240, 169, 71, 0.095), transparent 70%);
   transform: translate3d(calc(var(--p, 0) * -12vw), calc(var(--p, 0) * -35vh), 0);
 }
 
@@ -41,13 +41,13 @@
 .atmos {
   overflow: hidden;
   background:
-    radial-gradient(ellipse 120% 90% at 50% 38%, transparent 52%, rgba(3, 10, 18, 0.42) 100%);
+    radial-gradient(ellipse 120% 90% at 50% 38%, transparent 52%, rgba(3, 10, 18, 0.5) 100%);
 }
 
 /* Film grain. Kills gradient banding on dark navy and gives the flat
    fields a paper-like tooth. ~3% — you feel it more than see it. */
 .atmos__grain {
-  opacity: 0.045;
+  opacity: 0.06;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 180px 180px;
 }
@@ -145,20 +145,14 @@
 
 /* ---------- Page-to-page: cross-document view transition --------------- */
 /* Chromium/Safari: header chrome stays put, the page crossfades under it
-   and the current-screen pill glides to its new place in the switcher.
+   and the journey rail stays put while the page fades under it.
    Browsers without support simply navigate as before. */
 @media (prefers-reduced-motion: no-preference) {
   @view-transition { navigation: auto; }
   .topnav { view-transition-name: topnav; }
-  .switcher { view-transition-name: switcher; }
-  .switcher a[aria-current="page"] { view-transition-name: switcher-pill; }
   ::view-transition-old(root), ::view-transition-new(root) {
     animation-duration: 240ms;
     animation-timing-function: var(--ease-out);
-  }
-  ::view-transition-group(switcher-pill) {
-    animation-duration: 420ms;
-    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   }
 }
 
@@ -172,3 +166,14 @@
   .just-checked .track-checkbox::after,
   .just-checked .rm-item-icon::after { animation: none; }
 }
+
+/* ---------- Typography: a display face that does work ------------------
+   Bricolage Grotesque for headlines and the big numerals; system-ui stays
+   for body copy and UI so the interface remains fast and familiar. */
+h1, h2, .picker h2, .picker-title, .prog-ring-val, .path-summary-value,
+.badge-title, .paper-name, .hero h1 {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+}
+h1, .picker h2 { letter-spacing: -0.02em; font-weight: 800; }
+.prog-ring-val, .path-summary-value { font-weight: 800; letter-spacing: -0.03em; }

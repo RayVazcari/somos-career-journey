@@ -5,13 +5,97 @@
 
   gsap.registerPlugin(ScrollTrigger);
 
+  var S = window.SomosState;
+
   /* ------------------------------------------------------------------
-     Progress math — every stage's number comes from js/progress-data.js,
-     the one shared file every page reads (see that file's comment for
-     why). This page no longer hardcodes any percentage in its own
-     markup; it looks each card's value up by data-stage-key/data-track
-     and writes data-pct itself, so everything downstream (labels, bar
-     fills, the overall average) still works unchanged.
+     Stage states — derived, not hard-coded. The first unfinished stage
+     on the main path is "you are here"; finished ones are teal and
+     solid; everything ahead is dashed. Prepare / Practice / Apply stay
+     open anytime (never locked), they just read as "not done yet".
+     ------------------------------------------------------------------ */
+  var GLYPH = {
+    "ai-discovery": '<path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path>',
+    "compare": '<rect x="3" y="4" width="7" height="16" rx="1.5"></rect><rect x="14" y="4" width="7" height="16" rx="1.5"></rect>',
+    "goal": '<circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="4"></circle><circle cx="12" cy="12" r="0.8" fill="currentColor"></circle>'
+  };
+  var CHECK_PATH = '<path d="M20 6L9 17l-5-5"></path>';
+
+  function nodeFor(key) {
+    return key === "journey" ? document.querySelector("[data-pct-of]") : document.querySelector('[data-stage-key="' + key + '"]');
+  }
+
+  (function applyStates() {
+    var seq = ["ai-discovery", "compare", "goal", "journey"];
+    var cur = -1;
+    for (var i = 0; i < seq.length; i++) { if (S.pct(seq[i]) < 100) { cur = i; break; } }
+
+    seq.forEach(function (key, idx) {
+      var node = nodeFor(key);
+      if (!node) return;
+      var complete = S.pct(key) === 100;
+      var isCurrent = idx === cur;
+      node.classList.remove("node--done", "node--current", "node--upcoming");
+      node.classList.add(complete ? "node--done" : isCurrent ? "node--current" : "node--upcoming");
+
+      // "You are here" furniture exists only on the current node
+      node.querySelectorAll(".pulse-ring, .here-tag").forEach(function (n) { n.remove(); });
+      if (isCurrent) {
+        var ring = document.createElement("span");
+        ring.className = "pulse-ring";
+        ring.setAttribute("data-pulse", "");
+        var tag = document.createElement("span");
+        tag.className = "here-tag";
+        tag.innerHTML = '<span class="pulse-dot"></span>You are here';
+        node.insertBefore(tag, node.firstChild);
+        node.insertBefore(ring, node.firstChild);
+      }
+
+      // Icon: a check once done, the stage's own glyph while still ahead
+      var icon = node.querySelector(".node-icon svg");
+      if (icon && GLYPH[key]) {
+        icon.innerHTML = complete ? CHECK_PATH : GLYPH[key];
+        icon.setAttribute("stroke-width", complete ? "2.6" : "2.2");
+      }
+
+      var label = node.closest(".stage") && node.closest(".stage").querySelector(".stage-label");
+      if (label) label.classList.toggle("is-current", isCurrent);
+
+      // The connector after a finished stage is solid; otherwise dashed
+      var stage = node.closest(".stage");
+      var conn = stage && stage.nextElementSibling;
+      if (conn && conn.classList.contains("connector")) {
+        conn.classList.toggle("connector--solid", complete);
+        conn.classList.toggle("connector--dashed", !complete);
+      }
+    });
+
+    // The fork leaves the hub: dim it until the path reaches it
+    var fork = document.querySelector(".fork-wrap");
+    if (fork) fork.classList.toggle("is-ahead", S.pct("goal") < 100);
+
+    var p = S.persona();
+    var goalNode = nodeFor("goal");
+    if (goalNode) {
+      var gd = goalNode.querySelector(".node-desc");
+      gd.innerHTML = p.goalSet
+        ? 'Target: <strong>' + p.role + '</strong> &mdash; unlocks your personalized roadmap, nothing before this was locked in.'
+        : 'Pick your target role &mdash; unlocks your personalized roadmap. Nothing before this is locked in, and you can change it later.';
+    }
+    var hub = nodeFor("journey");
+    if (hub) {
+      hub.querySelector(".node-desc").innerHTML =
+        "Your home base &mdash; the average of Learn, Build and Connect below, tracked together, not as separate to-do lists.";
+    }
+    var reward = document.querySelector(".node--reward .node-desc");
+    if (reward && S.data.apply.claimed) reward.innerHTML = "Pathfinder badge earned &mdash; every step behind it is something you actually did.";
+  })();
+
+  /* ------------------------------------------------------------------
+     Progress math — every number comes from the one engine
+     (js/state.js). This page writes no percentage of its own: it looks
+     each card's value up by data-stage-key / data-track and writes
+     data-pct, so labels, bar fills and the overall figure all agree
+     with every other page.
      ------------------------------------------------------------------ */
   function applyLabel(el) {
     var key = el.getAttribute("data-stage-key") || el.getAttribute("data-track");
@@ -27,30 +111,20 @@
   var trackedStages = document.querySelectorAll("[data-stage-key], [data-track]");
   trackedStages.forEach(applyLabel);
 
-  /* "My Career Journey" shows its OWN number — the sum of its three
-     direct children (Learn + Build + Connect) — which is a different,
-     narrower figure than the whole-path average above. It's computed
-     from data-pct on the matching [data-track] cards, not hardcoded, so
-     it can't drift out of sync with them either. Clamped at 100 so a
-     later state where the tracks add past 100 still displays sanely. */
-  var trackValues = {};
-  document.querySelectorAll("[data-track]").forEach(function (el) {
-    trackValues[el.getAttribute("data-track")] = Number(el.getAttribute("data-pct"));
-  });
+  /* "My Career Journey" is the AVERAGE of its three tracks (Learn, Build,
+     Connect). It used to be their sum, which only worked while nobody
+     could change anything: finishing Learn alone would have read as
+     100%. An average always means what it says. */
   document.querySelectorAll("[data-pct-of]").forEach(function (el) {
-    var keys = el.getAttribute("data-pct-of").split(",");
-    var vals = keys
-      .map(function (k) { return trackValues[k.trim()]; })
-      .filter(function (v) { return v !== undefined; });
-    if (!vals.length) return;
-    var total = Math.min(100, vals.reduce(function (a, b) { return a + b; }, 0));
+    var total = S.pct("journey");
+    el.setAttribute("data-pct", total);
     var label = el.querySelector(".pct-label");
     if (label) label.textContent = total + "%";
     var fill = el.querySelector(".pct-fill");
     if (fill) fill.dataset.target = total;
   });
 
-  var overall = window.SomosProgress ? window.SomosProgress.overall : 0;
+  var overall = S.overall;
 
   /* Overall path progress lives in its own standalone widget (.path-summary),
      never inside a stage card — keeping it physically separate is what

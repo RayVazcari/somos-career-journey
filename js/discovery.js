@@ -3,25 +3,7 @@
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ------------------------------------------------------------------
-     Overall program progress — same shared figure the Map shows,
-     from the same js/progress-data.js. Every screen carries this.
-     ------------------------------------------------------------------ */
-  if (window.SomosProgress) {
-    var overallLabel = document.querySelector("[data-overall-label]");
-    if (overallLabel) overallLabel.textContent = window.SomosProgress.overall + "%";
-
-    var ring = document.querySelector("[data-ring-fill]");
-    if (ring) {
-      var circumference = 2 * Math.PI * 7; // matches r="7" in the header ring
-      var offset = circumference * (1 - window.SomosProgress.overall / 100);
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () {
-          ring.style.strokeDashoffset = String(offset);
-        });
-      });
-    }
-  }
+  var S = window.SomosState;
 
   /* ------------------------------------------------------------------
      Scripted conversation — no backend yet, so this is a fixed tree,
@@ -228,6 +210,9 @@
     if (step.field) {
       profile[step.field] = answer;
       updateProfileField(step.field, answer);
+      // The engine owns the answer: it's what the Map, Compare, the
+      // Dashboard and the resume read from.
+      S.update(function (d) { d.discovery.answers[step.field] = answer; });
     }
 
     busy = true;
@@ -262,10 +247,50 @@
     if (e.key === "Enter") { e.preventDefault(); submitStep(); }
   });
 
+  function showFinal() {
+    chatChips.innerHTML = "";
+    document.querySelector(".chat-composer-row").style.display = "none";
+    document.querySelector(".chat-hint").style.display = "none";
+    chatCta.classList.add("is-visible");
+  }
+
+  /* Redo: clears only this conversation (the rest of the journey stays). */
+  var redo = document.createElement("button");
+  redo.type = "button";
+  redo.className = "link-btn";
+  redo.textContent = "Redo this conversation";
+  chatCta.appendChild(redo);
+  redo.addEventListener("click", function () {
+    S.update(function (d) {
+      d.discovery.answers = { background: "", experience: "", enjoys: [], coding: [], priorities: [] };
+    }, { silent: true });
+    window.location.reload();
+  });
+
   /* ------------------------------------------------------------------
-     Init — step 0's AI message and progress state are already in the
-     page markup; just wire up its chips and the progress bar.
+     Init — if answers already exist (a returning visit, or the example
+     profile), replay the conversation from the engine so this page and
+     the 100% on the Map always tell the same story. Otherwise step 0's
+     AI message is already in the markup; just wire up its chips.
      ------------------------------------------------------------------ */
-  updateProgress(0);
-  renderChips(STEPS[0]);
+  var saved = S.data.discovery.answers;
+  var answered = 0;
+  while (answered < 5 && saved[STEPS[answered].field] && saved[STEPS[answered].field].length) answered++;
+
+  if (answered > 0) {
+    for (var i = 0; i < answered; i++) {
+      var ans = saved[STEPS[i].field];
+      profile[STEPS[i].field] = ans;
+      appendUserMessage(Array.isArray(ans) ? ans.join(", ") : ans);
+      updateProfileField(STEPS[i].field, ans);
+      appendAIMessage(STEPS[i + 1].aiText);
+    }
+    currentIndex = answered;
+    updateProgress(currentIndex);
+    if (STEPS[currentIndex].type === "final") showFinal();
+    else renderChips(STEPS[currentIndex]);
+  } else {
+    updateProgress(0);
+    renderChips(STEPS[0]);
+  }
 })();

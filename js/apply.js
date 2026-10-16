@@ -2,6 +2,7 @@
   "use strict";
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var S = window.SomosState;
 
   function esc(s) {
     var d = document.createElement("div");
@@ -9,11 +10,17 @@
     return d.innerHTML;
   }
 
+  var roleName = S.persona().role;
+  document.getElementById("applySub").textContent =
+    "Start applying for " + roleName + " roles today — with a resume that actually sounds like you.";
+  document.getElementById("boardsLabel").textContent = "CURATED BOARDS FOR " + roleName.toUpperCase();
+
   /* ---------------- job boards ----------------
      Search links use each site's own public search URL for the
      target role. Opens in a new tab — leaving this page doesn't
-     count as having applied; that's what the badge criterion is for. */
-  var ROLE = encodeURIComponent("Product Operations Manager");
+     count as having applied; opening a board only counts as having
+     started your search. */
+  var ROLE = encodeURIComponent(roleName);
   var BOARDS = [
     { name: "LinkedIn Jobs", url: "https://www.linkedin.com/jobs/search/?keywords=" + ROLE, bg: "rgba(10,102,194,0.15)", fg: "#4DA3FF",
       icon: '<path d="M4.98 3.5C4.98 4.88 3.9 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V23h-4V8zm7.5 0h3.8v2.05h.05c.53-1 1.83-2.05 3.77-2.05C19.6 8 21 10.15 21 14.05V23h-4v-8.1c0-1.93-.03-4.4-2.68-4.4-2.68 0-3.1 2.1-3.1 4.27V23h-4V8z"></path>', fill: true },
@@ -29,14 +36,22 @@
       icon: '<path d="M4 4l16 8-16 8V4z"></path>' }
   ];
 
-  document.getElementById("boards").innerHTML = BOARDS.map(function (b) {
+  var boardsEl = document.getElementById("boards");
+  boardsEl.innerHTML = BOARDS.map(function (b) {
     return (
-      '<a class="board" href="' + b.url + '" target="_blank" rel="noopener noreferrer">' +
+      '<a class="board" data-board="' + esc(b.name) + '" href="' + b.url + '" target="_blank" rel="noopener noreferrer">' +
       '<span class="board-icon" style="background:' + b.bg + ";color:" + b.fg + '">' +
       '<svg width="16" height="16" viewBox="0 0 24 24" fill="' + (b.fill ? "currentColor" : "none") + '" stroke="' + (b.fill ? "none" : "currentColor") + '" stroke-width="2">' + b.icon + "</svg></span>" +
-      '<span><span class="board-name">' + esc(b.name) + '</span><br><span class="board-sub">Search Product Operations Manager</span></span></a>'
+      '<span><span class="board-name">' + esc(b.name) + '</span><br><span class="board-sub">Search ' + esc(roleName) + "</span></span></a>"
     );
   }).join("");
+
+  boardsEl.addEventListener("click", function (e) {
+    var a = e.target.closest("[data-board]");
+    if (!a) return;
+    var name = a.getAttribute("data-board");
+    S.update(function (d) { if (d.apply.boardsOpened.indexOf(name) < 0) d.apply.boardsOpened.push(name); });
+  });
 
   /* ---------------- start date ---------------- */
   var dateEl = document.getElementById("planDate");
@@ -54,85 +69,101 @@
     var day = String(d.getDate()).padStart(2, "0");
     return d.getFullYear() + "-" + m + "-" + day;
   }
+  function fromIso(s) {
+    var p = s.split("-");
+    return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+  }
   function pretty(d) {
     return d.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
   }
 
-  var startDate = nextMonday();
   var editing = false;
+  function currentDate() { return S.data.apply.startDate ? fromIso(S.data.apply.startDate) : nextMonday(); }
 
   function renderDate() {
+    var saved = !!S.data.apply.startDate;
     if (editing) {
-      dateEl.innerHTML = '<input class="plan-date-input" type="date" id="planInput" min="' + iso(new Date()) + '" value="' + iso(startDate) + '" aria-label="Start date">';
+      dateEl.innerHTML = '<input class="plan-date-input" type="date" id="planInput" min="' + iso(new Date()) + '" value="' + iso(currentDate()) + '" aria-label="Start date">';
       editBtn.textContent = "Save";
       document.getElementById("planInput").focus();
     } else {
-      dateEl.textContent = pretty(startDate);
+      dateEl.innerHTML = esc(pretty(currentDate())) + (saved ? "" : ' <span class="ph">(suggested — Edit &amp; Save to set it)</span>');
       editBtn.textContent = "Edit";
     }
   }
   editBtn.addEventListener("click", function () {
     if (editing) {
       var v = document.getElementById("planInput").value;
-      if (v) {
-        var p = v.split("-");
-        startDate = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
-      }
+      if (v) S.update(function (d) { d.apply.startDate = v; });
     }
     editing = !editing;
     renderDate();
   });
-  renderDate();
 
   /* ---------------- badge ---------------- */
-  var CRITERIA = [
-    { text: "Career direction chosen — Product Operations Manager", done: true },
-    { text: "Personalized roadmap generated", done: true },
-    { text: "Resume & LinkedIn built from your real story", done: true },
-    { text: "Practiced at least one mock interview", done: false, demo: true },
-    { text: "Applied to at least one role", done: false, demo: true }
-  ];
-  var claimed = false;
-
   var list = document.getElementById("criteria");
   var countEl = document.getElementById("badgeCount");
   var claimBtn = document.getElementById("claimBtn");
   var card = document.getElementById("badgeCard");
 
+  /* Criteria 1–3 are DERIVED from what you did elsewhere — you can't
+     tick them here. 4 and 5 happen outside this prototype (the Mock
+     Interview program, and the actual applications), so they carry a
+     clearly-labelled "Prototype" button. */
+  function criteria() {
+    var d = S.data;
+    return [
+      { text: "Career direction chosen — " + S.roleName(), done: d.compare.goalConfirmed, go: "compare-careers.html", goLabel: "Choose your goal" },
+      { text: "Personalized roadmap generated", done: S.pct("ai-discovery") === 100, go: "ai-discovery.html", goLabel: "Finish Discovery" },
+      { text: "Resume & LinkedIn built from your real story", done: d.prepare.resumeDownloaded && d.prepare.copied.length > 0, go: "prepare.html", goLabel: "Go to Prepare" },
+      { text: "Practiced at least one mock interview", done: d.practice.mockDone, proto: "mock" },
+      { text: "Applied to at least one role", done: d.apply.applied, proto: "applied" }
+    ];
+  }
+
   function render() {
-    list.innerHTML = CRITERIA.map(function (c, i) {
+    var C = criteria();
+    var claimed = S.data.apply.claimed;
+    list.innerHTML = C.map(function (c, i) {
+      var action = "";
+      if (!c.done && !claimed) {
+        if (c.go) action = '<a class="criterion-link" href="' + c.go + '">' + c.goLabel + " &#8594;</a>";
+        else if (c.proto) action = '<button type="button" class="ln-btn ln-btn--small criterion-demo" data-proto="' + c.proto + '" title="Prototype only: in the real product this is set by the Mock Interview program / your application tracker, not by you">Prototype: mark done</button>';
+      }
       return (
         '<div class="criterion' + (c.done ? " is-done" : "") + '">' +
         '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="10"></circle>' +
         (c.done ? '<path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"></path>' : "") + "</svg>" +
-        "<span>" + esc(c.text) + "</span>" +
-        (c.demo && !c.done && !claimed
-          ? '<button type="button" class="ln-btn ln-btn--small criterion-demo" data-demo="' + i + '" title="Prototype only: in the real product this is set by the Mock Interview program / your application tracker, not by you">Prototype: mark done</button>'
-          : "") +
-        "</div>"
+        "<span>" + esc(c.text) + "</span>" + action + "</div>"
       );
     }).join("");
 
-    list.querySelectorAll("[data-demo]").forEach(function (b) {
+    list.querySelectorAll("[data-proto]").forEach(function (b) {
       b.addEventListener("click", function () {
-        CRITERIA[Number(b.dataset.demo)].done = true;
-        render();
+        var which = b.getAttribute("data-proto");
+        S.update(function (d) {
+          if (which === "mock") d.practice.mockDone = true;
+          else d.apply.applied = true;
+        });
       });
     });
 
-    var done = CRITERIA.filter(function (c) { return c.done; }).length;
-    var left = CRITERIA.length - done;
+    var done = C.filter(function (c) { return c.done; }).length;
+    var left = C.length - done;
 
     if (claimed) {
-      countEl.textContent = "All " + CRITERIA.length + " completed — and earned, not just visited.";
+      card.classList.add("is-claimed");
+      document.getElementById("badgeTitle").textContent = "Starting in Tech — Pathfinder badge earned";
+      document.getElementById("badgeSub").textContent = "Every step behind this badge is something you actually did:";
+      countEl.textContent = "All " + C.length + " completed — and earned, not just visited.";
       claimBtn.disabled = true;
       claimBtn.textContent = "Badge claimed";
     } else if (left === 0) {
-      countEl.textContent = "All " + CRITERIA.length + " completed — it’s yours to claim.";
+      countEl.textContent = "All " + C.length + " completed — it’s yours to claim.";
       claimBtn.disabled = false;
       claimBtn.textContent = "Claim badge";
     } else {
-      countEl.textContent = done + " of " + CRITERIA.length + " completed — the badge unlocks once the last " + (left === 1 ? "one is" : left + " are") + " done, not just for visiting this page.";
+      countEl.textContent = done + " of " + C.length + " completed — the badge unlocks once the last " + (left === 1 ? "one is" : left + " are") + " done, not just for visiting this page.";
       claimBtn.disabled = true;
       claimBtn.textContent = "Claim badge (" + left + " step" + (left === 1 ? "" : "s") + " left)";
     }
@@ -156,16 +187,14 @@
   }
 
   claimBtn.addEventListener("click", function () {
-    if (claimBtn.disabled || claimed) return;
-    claimed = true;
-    card.classList.add("is-claimed");
-    document.getElementById("badgeTitle").textContent = "Starting in Tech — Pathfinder badge earned";
-    document.getElementById("badgeSub").textContent = "Every step behind this badge is something you actually did:";
-    render();
+    if (claimBtn.disabled || S.data.apply.claimed) return;
+    S.update(function (d) { d.apply.claimed = true; }, { silent: true });
     burst();
     if (window.SomosToast) window.SomosToast("Pathfinder badge earned", "Direction chosen, roadmap built, resume done, interview practiced, application sent.", { persist: true });
   });
 
+  document.addEventListener("somos:change", function () { render(); if (!editing) renderDate(); });
+  renderDate();
   render();
 
   // /apply.html#badge from the Map's "Land the Role" node

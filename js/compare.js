@@ -2,73 +2,88 @@
   "use strict";
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var S = window.SomosState;
 
   /* ------------------------------------------------------------------
      Role data. Every card explains fit ("why this fits you") and gives
      honest cons ("things to consider") instead of a bare match percent,
-     per the design spec. Scripted content — no model behind it yet.
+     per the design spec. The reasoning is assembled from what THIS
+     person said in Discovery — still scripted (no model behind it yet),
+     but it never claims something they didn't tell us.
      ------------------------------------------------------------------ */
+  function enjoyLine(p, words, tail, fallback) {
+    for (var i = 0; i < p.enjoys.length; i++) {
+      for (var j = 0; j < words.length; j++) {
+        if (p.enjoys[i].indexOf(words[j]) > -1) return "You said you enjoy " + p.enjoys[i] + " — " + tail + ".";
+      }
+    }
+    return fallback;
+  }
+  function bgLine(p, tail) {
+    return p.bg
+      ? "Your background in " + p.bg + " " + tail + "."
+      : "Your past work experience " + tail + ".";
+  }
+  function codingNote(p) {
+    var c = (S.data.discovery.answers.coding || [])[0];
+    if (c === "Never tried it" || c === "A little curious") return "High coding intensity — you told us you’re “" + c.toLowerCase() + "” on code so far.";
+    return "High coding intensity — expect to build real software, not just use tools.";
+  }
+
   var ROLES = {
     "prod-ops": {
       name: "Product Operations Manager", fit: "Strong potential fit", level: "strong",
-      why: [
-        "You said you enjoy organizing and analyzing — this role is built around both.",
-        "Your lab/clinic coordination experience maps directly to process work."
-      ],
-      consider: ["Some familiarity with tools like Jira and SQL will help early on."],
+      why: function (p) { return [
+        enjoyLine(p, ["organiz", "analyz"], "this role is built around exactly that", "Built around organizing work and analyzing information, with little or no coding."),
+        bgLine(p, "maps directly to process work")
+      ]; },
+      consider: function () { return ["Some familiarity with tools like Jira and SQL will help early on."]; },
       chips: ["Coding: Low", "People: High", "Entry: Medium"]
     },
     "tpm": {
       name: "Technical Program Manager", fit: "Strong potential fit", level: "strong",
-      why: [
-        "Heavy people-interaction, which matches what you told us you enjoy.",
-        "Rewards the coordination and documentation skills from your background."
-      ],
-      consider: ["Entry bar is a bit higher — expect to learn technical vocabulary fast."],
+      why: function (p) { return [
+        enjoyLine(p, ["people"], "heavy people-interaction is the job", "Heavy people-interaction and cross-team coordination at the center of the work."),
+        bgLine(p, "rewards the coordination and documentation skills you’ve already built")
+      ]; },
+      consider: function () { return ["Entry bar is a bit higher — expect to learn technical vocabulary fast."]; },
       chips: ["Coding: Low–Medium", "People: Very High", "Entry: Medium–High"]
     },
     "platform": {
       name: "Platform Engineer", fit: "Strong potential fit", level: "strong",
-      why: ["Strong demand and compensation if you end up enjoying hands-on building."],
-      consider: [
-        "High coding intensity — you mentioned little interest in programming so far.",
-        "Longer runway before you’d feel job-ready (6–12 months)."
-      ],
+      why: function () { return ["Strong demand and compensation if you end up enjoying hands-on building."]; },
+      consider: function (p) { return [codingNote(p), "Longer runway before you’d feel job-ready (6–12 months)."]; },
       chips: ["Coding: High", "People: Medium", "Entry: High"]
     },
     "analyst": {
       name: "Business Analyst", fit: "Medium potential fit", level: "medium",
-      why: [
-        "Analyzing information is one of the things you said you enjoy most.",
-        "Research and documentation from lab work carry over well."
-      ],
-      consider: ["Less hands-on people coordination than Product Operations."],
+      why: function (p) { return [
+        enjoyLine(p, ["analyz"], "it’s the core of the role", "Analyzing information is the core of the role."),
+        "Research and documentation habits carry over well."
+      ]; },
+      consider: function () { return ["Less hands-on people coordination than Product Operations."]; },
       chips: ["Coding: Low", "People: Medium", "Entry: Medium"]
     },
     "csm": {
       name: "Customer Success Manager", fit: "Medium potential fit", level: "medium",
-      why: [
-        "Working with people is at the center of the role.",
-        "Clinic experience means you already handle people who need help."
-      ],
-      consider: ["Less analytical depth day to day, and quota-style targets are common."],
+      why: function (p) { return [
+        enjoyLine(p, ["people"], "it’s at the center of the role", "Working with people is at the center of the role."),
+        bgLine(p, "suggests you already know how to help people who are stuck")
+      ]; },
+      consider: function () { return ["Less analytical depth day to day, and quota-style targets are common."]; },
       chips: ["Coding: None", "People: Very High", "Entry: Low"]
     },
     "ux": {
       name: "UX Researcher", fit: "Lower potential fit", level: "lower",
-      why: ["Your research background is a genuine head start."],
-      consider: [
+      why: function (p) { return [
+        enjoyLine(p, ["research"], "research is the heart of this role", "A genuine head start if you enjoy research and digging into how people behave.")
+      ]; },
+      consider: function () { return [
         "Portfolio-driven hiring — you’d need to build case studies first.",
         "Fewer entry-level openings than the other roles here."
-      ],
+      ]; },
       chips: ["Coding: Low", "People: High", "Entry: High"]
     }
-  };
-
-  var state = {
-    primary: "prod-ops",
-    exploring: ["tpm", "platform"],   // ordered; excludes primary
-    more: ["analyst", "csm", "ux"]    // everything not currently compared
   };
 
   var ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="4"></circle><circle cx="12" cy="12" r="0.7" fill="currentColor"></circle></svg>';
@@ -96,18 +111,24 @@
 
   function buildCard(id, mode, index) {
     var r = ROLES[id];
+    var p = S.persona();
+    var st = S.data.compare;
     var isPrimary = mode === "primary";
     var card = el("article", "role-card" + (isPrimary ? " is-primary" : ""));
     card.dataset.role = id;
+    if (isPrimary) card.id = "goal";
     if (!reduceMotion) card.style.animationDelay = (index * 0.07) + "s";
 
     var tag = "";
-    if (mode === "primary") tag = '<span class="role-tag role-tag--primary">PRIMARY</span>';
+    if (mode === "primary") tag = '<span class="role-tag role-tag--primary">' + (st.goalConfirmed ? "YOUR GOAL" : "PRIMARY") + '</span>';
     else if (mode === "exploring") tag = '<span class="role-tag role-tag--exploring">EXPLORING</span>';
 
     var actions;
     if (isPrimary) {
-      actions = '<button type="button" class="role-btn role-btn--primary" disabled>Primary path</button>';
+      actions = st.goalConfirmed
+        ? '<button type="button" class="role-btn role-btn--primary" disabled>✓ Your goal</button>'
+        : '<button type="button" class="role-btn role-btn--primary" data-act="goal">Make this my goal</button>' +
+          '<span class="role-hint">You can change it any time.</span>';
     } else if (mode === "exploring") {
       actions =
         '<button type="button" class="role-btn" data-act="primary">Set as primary</button>' +
@@ -119,14 +140,26 @@
     card.innerHTML =
       '<div class="role-head"><span class="role-icon">' + ICON + '</span><span class="role-name">' + esc(r.name) + '</span></div>' +
       '<div class="role-fitrow"><span class="role-fit is-' + r.level + '">' + r.fit + '</span>' + tag + '</div>' +
-      '<div class="role-section"><div class="role-section-label">WHY THIS FITS YOU</div>' + points(r.why, "why", "✓") + '</div>' +
-      '<div class="role-section"><div class="role-section-label">THINGS TO CONSIDER</div>' + points(r.consider, "consider", "!") + '</div>' +
+      '<div class="role-section"><div class="role-section-label">WHY THIS FITS YOU</div>' + points(r.why(p), "why", "✓") + '</div>' +
+      '<div class="role-section"><div class="role-section-label">THINGS TO CONSIDER</div>' + points(r.consider(p), "consider", "!") + '</div>' +
       '<div class="role-chips">' + r.chips.map(function (c) { return '<span class="role-chip">' + esc(c) + '</span>'; }).join("") + '</div>' +
       '<div class="role-actions">' + actions + '</div>';
     return card;
   }
 
+  function renderSub() {
+    var p = S.persona();
+    var sub = document.getElementById("cmpSub");
+    if (p.enjoys.length) {
+      var two = p.enjoys.slice(0, 2).map(function (e) { return "<strong>" + esc(e) + "</strong>"; });
+      sub.innerHTML = "Based on what you told us: you enjoy " + two.join(" and ") + ". You don&rsquo;t have to pick just one yet.";
+    } else {
+      sub.innerHTML = "These are general starting points. <a href=\"ai-discovery.html\" style=\"color:var(--teal);font-weight:600\">Answer AI Discovery</a> and the reasoning below will be about you, not a generic profile.";
+    }
+  }
+
   function render() {
+    var state = S.data.compare;
     grid.innerHTML = "";
     grid.appendChild(buildCard(state.primary, "primary", 0));
     state.exploring.forEach(function (id, i) { grid.appendChild(buildCard(id, "exploring", i + 1)); });
@@ -140,6 +173,7 @@
     document.getElementById("summaryPrimary").textContent = ROLES[state.primary].name;
     document.getElementById("summaryExploring").textContent =
       state.exploring.length ? state.exploring.map(function (id) { return ROLES[id].name; }).join(" · ") : "Nothing yet";
+    renderSub();
   }
 
   function remove(list, id) {
@@ -148,24 +182,35 @@
   }
 
   /* Exploration should not feel like commitment: swapping primary never
-     drops the old one — it just becomes an "exploring" role. */
+     drops the old one — it just becomes an "exploring" role. Only
+     "Make this my goal" commits, and even that can be changed later. */
   function onAction(e) {
     var btn = e.target.closest("[data-act]");
     if (!btn) return;
     var id = btn.closest(".role-card").dataset.role;
     var act = btn.dataset.act;
 
-    if (act === "primary") {
-      remove(state.exploring, id);
-      state.exploring.unshift(state.primary);
-      state.primary = id;
-      window.SomosToast && window.SomosToast("Primary path updated", ROLES[id].name + " is now your primary path. Nothing else was reset.");
-    } else if (act === "remove") {
-      remove(state.exploring, id);
-      state.more.unshift(id);
-    } else if (act === "add") {
-      remove(state.more, id);
-      state.exploring.push(id);
+    S.update(function (d) {
+      var c = d.compare;
+      if (act === "goal") {
+        c.goalConfirmed = true;
+      } else if (act === "primary") {
+        remove(c.exploring, id);
+        c.exploring.unshift(c.primary);
+        c.primary = id;
+        c.decisions++;
+      } else if (act === "remove") {
+        remove(c.exploring, id);
+        c.more.unshift(id);
+        c.decisions++;
+      } else if (act === "add") {
+        remove(c.more, id);
+        c.exploring.push(id);
+        c.decisions++;
+      }
+    });
+    if (act === "primary" && window.SomosToast) {
+      window.SomosToast("Primary path updated", ROLES[id].name + " is now your primary path. Nothing else was reset.");
     }
     render();
   }

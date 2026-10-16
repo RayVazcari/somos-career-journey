@@ -133,26 +133,13 @@
   });
 
   /* ------------------------------------------------------------------
-     5. Numbers count up to their value instead of appearing
+     5. (Number count-ups now live in shell.js, where the numbers do.)
+        Navigating away mid page-fade makes the browser log a harmless
+        "Transition was skipped" rejection — keep the console clean.
      ------------------------------------------------------------------ */
-  if (!reduceMotion) {
-    document.querySelectorAll("[data-program-overall], [data-stage-pct]").forEach(function (el) {
-      var m = /^(\d+)%$/.exec((el.textContent || "").trim());
-      if (!m) return;
-      var target = Number(m[1]);
-      if (target === 0) return;
-      var start = null, dur = 1100;
-      el.textContent = "0%";
-      var tick = function (t) {
-        if (start === null) start = t;
-        var k = Math.min(1, (t - start) / dur);
-        var eased = k === 1 ? 1 : 1 - Math.pow(2, -10 * k); // easeOutExpo
-        el.textContent = Math.round(target * eased) + "%";
-        if (k < 1) requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
-    });
-  }
+  window.addEventListener("unhandledrejection", function (e) {
+    if (e.reason && e.reason.name === "AbortError") e.preventDefault();
+  });
 
   /* ------------------------------------------------------------------
      6. Completing a checklist item settles with a little spring.

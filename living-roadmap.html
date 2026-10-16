@@ -5,8 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Your Product Operations Roadmap — SOMOS.tech</title>
 <meta name="description" content="The execution layer: every resource, why it matters, and how long it takes.">
-<link rel="stylesheet" href="css/styles.css?v=4">
-<link rel="stylesheet" href="css/roadmap.css?v=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
+<link rel="stylesheet" href="css/styles.css?v=6">
+<link rel="stylesheet" href="css/roadmap.css?v=6">
 <meta name="theme-color" content="#0A1E33">
 <meta name="color-scheme" content="dark">
 <meta property="og:type" content="website">
@@ -15,7 +18,8 @@
 <meta property="og:description" content="The execution layer: every resource, why it matters, and how long it takes.">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230A1E33'/%3E%3Crect x='5' y='5' width='22' height='22' rx='7' fill='none' stroke='%2322E2A0' stroke-width='2.4'/%3E%3Cpath d='M11 16.5l3.6 3.6L21.5 12' fill='none' stroke='%2322E2A0' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="css/polish.css?v=1">
+<link rel="stylesheet" href="css/polish.css?v=6">
+<link rel="stylesheet" href="css/shell.css?v=6">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -37,17 +41,6 @@
   </div>
 </nav>
 
-<div class="switcher" role="navigation" aria-label="Career Journey screens">
-  <a href="index.html">Map</a>
-  <a href="ai-discovery.html">Discovery</a>
-  <a href="compare-careers.html">Compare</a>
-  <a href="career-journey.html">My Journey</a>
-  <a href="living-roadmap.html" aria-current="page">Roadmap</a>
-  <a href="prepare.html">Prepare</a>
-  <a href="practice.html">Practice</a>
-  <a href="apply.html">Apply</a>
-</div>
-
 <header class="rm-header">
   <div class="rm-header-main">
     <div class="rm-header-copy">
@@ -55,27 +48,14 @@
         <span class="eyebrow">CONCEPT</span>
         <span class="rm-ai-tag">AI GENERATED</span>
       </div>
-      <h1>Your Product Operations roadmap</h1>
+      <h1 id="rmTitle">Your roadmap</h1>
       <p>The <a href="index.html">Map</a> shows where you&rsquo;re headed. This is how you actually get there &mdash; every resource, why it matters, and how long it takes.</p>
-    </div>
-    <div class="rm-header-side">
-      <div class="rm-progress">
-        <div class="rm-progress-label">Roadmap progress</div>
-        <div class="rm-progress-value" id="rmOverall">&mdash;%</div>
-        <div class="rm-progress-sub" id="rmOverallSub"></div>
-      </div>
       <button type="button" class="rm-download" id="rmDownload">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-        Download
+        Download roadmap
       </button>
     </div>
-  </div>
-  <div class="rm-program-row">
-    <svg class="rm-program-ring" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
-      <circle cx="8" cy="8" r="6" fill="none" stroke="var(--card-2)" stroke-width="2.5"></circle>
-      <circle cx="8" cy="8" r="6" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round" transform="rotate(-90 8 8)" data-program-ring></circle>
-    </svg>
-    Overall program: <strong data-program-overall>&mdash;%</strong>
+    <div data-prog-slot data-stage="journey"></div>
   </div>
 </header>
 
@@ -94,9 +74,9 @@
   <section class="rm-phase rm-phase--launch" aria-label="Phase 3, career readiness">
     <div class="rm-phase-head">
       <span class="rm-phase-title">Phase 3 &mdash; Career readiness</span>
-      <span class="rm-phase-pct">0%</span>
+      <span class="rm-phase-pct" id="rmP3Pct">0%</span>
     </div>
-    <div class="rm-bar"><div class="rm-bar-fill" style="width:0%"></div></div>
+    <div class="rm-bar"><div class="rm-bar-fill" id="rmP3Bar" style="width:0%"></div></div>
     <p class="rm-launch-note">Your Career Launch Kit &mdash; three steps, each its own space so nothing feels crammed into one page.</p>
     <div class="rm-launch-grid">
       <button type="button" class="rm-launch" data-coming-soon="Prepare" data-href="prepare.html">
@@ -132,9 +112,10 @@
 <div class="toast-stack" id="toastStack" aria-live="polite"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="js/progress-data.js?v=3"></script>
-<script src="js/common.js?v=4"></script>
-<script src="js/roadmap.js?v=1"></script>
-<script src="js/polish.js?v=1"></script>
+<script src="js/state.js?v=6"></script>
+<script src="js/common.js?v=6"></script>
+<script src="js/shell.js?v=6"></script>
+<script src="js/roadmap.js?v=6"></script>
+<script src="js/polish.js?v=6"></script>
 </body>
 </html>

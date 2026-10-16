@@ -28,6 +28,7 @@
 
   /* Type */
   --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: ui-monospace, "SF Mono", "Cascadia Code", monospace;
 
   /* Motion */

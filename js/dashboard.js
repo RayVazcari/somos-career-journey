@@ -1,99 +1,108 @@
 (function () {
   "use strict";
 
-  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var S = window.SomosState;
 
   var ICONS = {
     learn: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>',
     build: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94z"></path></svg>',
     connect: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>'
   };
+  var ITEM_ICON = {
+    learn: ICONS.learn.replace('width="17" height="17"', 'width="16" height="16"'),
+    build: ICONS.build.replace('width="17" height="17"', 'width="16" height="16"'),
+    connect: ICONS.connect.replace('width="17" height="17"', 'width="16" height="16"')
+  };
   var CHECK = '<svg class="icon-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>';
 
-  /* ------------------------------------------------------------------
-     Learn / Build / Connect data. Each item's own "why it matters"
-     line, not just a bare checkbox label, per the design spec. Percent
-     per track is computed live from these checkboxes — this page is
-     specifically where real completion state should drive things,
-     unlike the static example numbers the other screens share.
-     ------------------------------------------------------------------ */
-  var TRACKS = [
-    {
-      key: "learn", name: "Learn", icon: ICONS.learn,
-      itemIcon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>',
-      completeTitle: "Learn complete",
-      completeBody: "All 4 courses & certs finished. Your roadmap just unlocked Build recommendations.",
-      items: [
-        { title: "Agile Fundamentals", meta: "Course · 3 hrs", why: "Almost every tech team runs on some flavor of Agile.", done: true },
-        { title: "Jira Fundamentals", meta: "Course · 2 hrs", why: "The tool you’ll actually use day-to-day to track work.", done: false },
-        { title: "SQL Basics", meta: "Course · 6 hrs", why: "Lets you pull your own data instead of waiting on an analyst.", done: false },
-        { title: "AWS Cloud Practitioner", meta: "Certification", why: "A recognizable credential recruiters screen for, even outside cloud roles.", done: false }
-      ]
-    },
-    {
-      key: "build", name: "Build", icon: ICONS.build,
-      itemIcon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94z"></path></svg>',
-      completeTitle: "Build complete",
-      completeBody: "Your hands-on proof is done — ready to turn it into interview stories.",
-      items: [
-        { title: "SOMOS Product Lab", meta: "Lab · 3 weeks", why: "Your first real deliverable — becomes your resume bullet.", done: false },
-        { title: "Volunteer project", meta: "Community · ongoing", why: "Hands-on experience without needing to be hired first.", done: false },
-        { title: "Case study write-up", meta: "Portfolio piece", why: "Turns the Lab project into something you can walk through in an interview.", done: false }
-      ]
-    },
-    {
-      key: "connect", name: "Connect", icon: ICONS.connect,
-      itemIcon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>',
-      completeTitle: "Connect complete",
-      completeBody: "You’ve built real relationships, not a contacts list — tailored to your target role.",
-      items: [
-        { title: "Joined SOMOS San Antonio", meta: "Chapter · local", why: "Local meetups are where most mentor connections actually start.", done: true },
-        { title: "Product Management AMA", meta: "Event · Sept 22", why: "Direct access to working PMs — rare outside a paid program.", done: false },
-        { title: "Find a mentor", meta: "Mentorship program", why: "Mentored career changers move faster — and feel less alone doing it.", done: false }
-      ]
-    }
-  ];
-
-  var grid = document.getElementById("trackGrid");
-
-  /* Snapshot of each track's completion as of the LAST render, used to
-     detect the 0%-or-partial -> 100% transition. This has to live
-     outside renderAll and be read before the DOM (re)renders — the
-     item toggle already mutated track.items by the time renderAll
-     runs, so computing "before" from track.items inside that same
-     call would just read the already-new state and miss the moment
-     of completion entirely. */
-  var wasComplete = {};
-  TRACKS.forEach(function (t) { wasComplete[t.key] = trackPct(t) === 100; });
-
-  function trackPct(track) {
-    var done = track.items.filter(function (i) { return i.done; }).length;
-    return Math.round((done / track.items.length) * 100);
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
   }
 
+  var grid = document.getElementById("trackGrid");
+  var TRACKS = ["learn", "build", "connect"];
+
+  /* ------------------------------------------------------------------
+     Header + profile card — all derived, nothing typed in
+     ------------------------------------------------------------------ */
+  function renderHeader() {
+    var p = S.persona();
+    var target = document.getElementById("dashTarget");
+    target.innerHTML = p.goalSet
+      ? 'Target role: <strong>' + esc(p.role) + '</strong>'
+      : 'Target role: <strong>Not chosen yet</strong>';
+
+    var rev = document.getElementById("dashRevisit");
+    var check = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22E2A0" stroke-width="2.4"><circle cx="12" cy="12" r="10"></circle><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
+    if (!p.hasDiscovery) {
+      rev.href = "ai-discovery.html";
+      rev.innerHTML = check + "Start with AI Discovery &mdash; it builds the profile this page uses";
+    } else if (!p.goalSet) {
+      rev.href = "compare-careers.html";
+      rev.innerHTML = check + "Choose your goal in Explore &amp; Compare to tailor this page";
+    } else {
+      rev.href = "ai-discovery.html";
+      rev.innerHTML = check + "Career direction set from your Discovery conversation &middot; revisit it";
+    }
+
+    var bg = [S.data.prepare.details.education, p.bg ? p.bg.charAt(0).toUpperCase() + p.bg.slice(1) : ""].filter(Boolean).join(" · ");
+    document.getElementById("pcBackground").textContent = bg || "Not asked yet — start AI Discovery";
+
+    document.getElementById("pcSkills").innerHTML = p.skills.length
+      ? p.skills.map(function (s) { return '<span class="mini-chip">' + esc(s) + "</span>"; }).join("")
+      : '<span class="mini-chip" style="opacity:.6">Builds as you answer Discovery</span>';
+
+    var missing;
+    if (S.pct("build") === 0) missing = "Hands-on project";
+    else if (S.pct("learn") < 50) missing = "Core coursework";
+    else if (S.pct("connect") < 50) missing = "A mentor or community";
+    else missing = "Interview practice";
+    document.getElementById("pcMissing").textContent = missing;
+
+    var next = S.nextItem();
+    var nextText = document.getElementById("nextText");
+    var nextBtn = document.getElementById("nextBtn");
+    if (next) {
+      nextText.textContent = "Next up: " + next.title + " — " + (next.reco || next.why.charAt(0).toLowerCase() + next.why.slice(1).replace(/\.$/, ""));
+      nextBtn.textContent = "See it on your roadmap";
+      nextBtn.setAttribute("data-href", "living-roadmap.html");
+    } else {
+      nextText.textContent = "Every item is done — your next move is Prepare, where your resume can draw on real, finished work.";
+      nextBtn.textContent = "Go to Prepare";
+      nextBtn.setAttribute("data-href", "prepare.html");
+    }
+  }
+
+  /* ------------------------------------------------------------------
+     Tracks
+     ------------------------------------------------------------------ */
   function renderTrack(track) {
-    var pct = trackPct(track);
+    var meta = S.TRACK_META[track];
+    var pct = S.pct(track);
     var complete = pct === 100;
     var card = document.createElement("section");
     card.className = "track-card" + (complete ? " is-complete" : "");
-    card.setAttribute("aria-label", track.name + " track, " + pct + " percent complete");
+    card.setAttribute("aria-label", meta.name + " track, " + pct + " percent complete");
 
-    var itemsHtml = track.items.map(function (item, i) {
+    var itemsHtml = S.trackItems(track).map(function (item) {
+      var done = !!S.data.items[item.id];
       return (
-        '<div class="track-item' + (item.done ? " is-done" : "") + '" data-item="' + i + '" role="checkbox" aria-checked="' + item.done + '" tabindex="0">' +
-        '<span class="track-checkbox"><span class="icon-item">' + track.itemIcon + '</span>' + CHECK + '</span>' +
+        '<div class="track-item' + (done ? " is-done" : "") + '" data-item="' + item.id + '" role="checkbox" aria-checked="' + done + '" tabindex="0">' +
+        '<span class="track-checkbox"><span class="icon-item">' + ITEM_ICON[track] + '</span>' + CHECK + '</span>' +
         '<div class="track-item-body">' +
-        '<div class="track-item-title">' + item.title + '</div>' +
-        '<div class="track-item-meta">' + item.meta + '</div>' +
-        '<div class="track-item-why">' + item.why + '</div>' +
+        '<div class="track-item-title">' + esc(item.title) + '</div>' +
+        '<div class="track-item-meta">' + esc(item.type) + ' · ' + esc(item.length) + '</div>' +
+        '<div class="track-item-why">' + esc(item.why) + '</div>' +
         '</div>' +
-        '<svg class="track-status" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="10"></circle>' + (item.done ? '<path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"></path>' : '') + '</svg>' +
+        '<svg class="track-status" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="10"></circle>' + (done ? '<path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"></path>' : '') + '</svg>' +
         '</div>'
       );
     }).join("");
 
     card.innerHTML =
-      '<div class="track-head"><div class="track-head-left"><span class="track-icon">' + track.icon + '</span><span class="track-name">' + track.name + '</span></div><span class="track-pct">' + pct + '%</span></div>' +
+      '<div class="track-head"><div class="track-head-left"><span class="track-icon">' + ICONS[track] + '</span><span class="track-name">' + meta.name + '</span></div><span class="track-pct">' + pct + '%</span></div>' +
       '<div class="track-bar"><div class="track-bar-fill" style="width:' + pct + '%"></div></div>' +
       itemsHtml +
       (complete
@@ -102,9 +111,8 @@
 
     card.querySelectorAll("[data-item]").forEach(function (row) {
       function toggle() {
-        var idx = Number(row.dataset.item);
-        track.items[idx].done = !track.items[idx].done;
-        renderAll();
+        var id = row.getAttribute("data-item");
+        S.update(function (d) { d.items[id] = !d.items[id]; });
       }
       row.addEventListener("click", toggle);
       row.addEventListener("keydown", function (e) {
@@ -115,42 +123,12 @@
     return card;
   }
 
-  /* Career readiness: a live composite of the three tracks above, so
-     it visibly moves as items are checked — distinct from "Overall
-     program" below it, which is the static shared figure every other
-     screen shows and does NOT change when you check things here. */
-  function updateReadiness() {
-    var avg = Math.round(TRACKS.reduce(function (sum, t) { return sum + trackPct(t); }, 0) / TRACKS.length);
-    var valueEl = document.querySelector("[data-readiness-value]");
-    if (valueEl) valueEl.textContent = avg + "%";
-    var ring = document.querySelector("[data-readiness-ring]");
-    if (ring) {
-      var c = 2 * Math.PI * 27;
-      ring.style.strokeDasharray = String(c);
-      ring.style.strokeDashoffset = String(c * (1 - avg / 100));
-    }
-  }
-
-  /* A milestone toast fires exactly once per track, only on the
-     transition into "every item checked" (compared against the
-     wasComplete snapshot from the previous render) — never on page
-     load for a track that already starts complete, and never repeats
-     while it stays complete. Un-checking an item later and completing
-     the track again re-fires the celebration, since wasComplete gets
-     updated to false as soon as it drops below 100%. */
   function renderAll() {
     grid.innerHTML = "";
-    TRACKS.forEach(function (track) { grid.appendChild(renderTrack(track)); });
-    updateReadiness();
-
-    TRACKS.forEach(function (t) {
-      var nowComplete = trackPct(t) === 100;
-      if (nowComplete && !wasComplete[t.key]) {
-        window.SomosToast && window.SomosToast(t.completeTitle, t.completeBody, { persist: true });
-      }
-      wasComplete[t.key] = nowComplete;
-    });
+    TRACKS.forEach(function (t) { grid.appendChild(renderTrack(t)); });
+    renderHeader();
   }
 
+  document.addEventListener("somos:change", renderAll);
   renderAll();
 })();
