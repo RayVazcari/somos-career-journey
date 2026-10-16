@@ -443,7 +443,7 @@
      re-renders.
      ------------------------------------------------------------------ */
   var H_SEL = ".track-name, .rm-phase-title, .ln-card-title, .ln-label, .profile-title, .profile-card-title, " +
-    ".role-name, .missed-title, .cmp-feedback-title, .badge-title, .apply-tips-title";
+    ".role-name, .missed-title, .cmp-feedback-title, .badge-title, .apply-tips-title, .stage-label";
   function patchHeadings() {
     document.querySelectorAll(H_SEL).forEach(function (e) {
       if (e.hasAttribute("role") || /^H[1-6]$/.test(e.tagName)) return;

@@ -235,3 +235,13 @@ h1, .picker h2 { letter-spacing: -0.02em; font-weight: 800; }
 
 /* Reserve the scrollbar's space so short pages don't sit 8px off long ones */
 html { scrollbar-gutter: stable; }
+
+.dash-revisit { display: inline-flex; align-items: center; min-height: 32px; }
+
+.cmp-toggle, .cmp-feedback-head, .missed-head { min-height: 32px; }
+.brand-row { min-height: 32px; display: flex; align-items: center; }
+
+.q-check { min-height: 32px; }
+
+/* inline-flex drops the space before the arrow glyph, so restore it as a gap */
+.ln-next, .criterion-link, .brand-review { gap: 0.4em; }

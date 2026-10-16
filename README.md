@@ -1,5 +1,9 @@
 # SOMOS.tech — Career Journey (concept prototype)
 
+> **Porting this into the SOMOS.tech site?** Start with [`HANDOFF.md`](HANDOFF.md) (what's real vs. mocked and the rules to keep)
+> and [`CLAUDE.md`](CLAUDE.md) (instructions for AI assistants). Prove the port with [`checks/tests.html`](checks/tests.html),
+> [`checks/audit.js`](checks/audit.js) and the reference screens in [`docs/screens/`](docs/screens/).
+
 A clickable, front-end-only mockup of the Career Journey: the successor to "Starting in Tech".
 Plain HTML / CSS / JS (GSAP from a CDN). No build step, no backend.
 

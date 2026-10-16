@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Career Journey — engine tests</title>
+<style>
+  body { font: 15px/1.5 system-ui, sans-serif; background: #0A1E33; color: #F3F7F9; max-width: 760px; margin: 32px auto; padding: 0 20px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sum { margin: 10px 0 22px; font-weight: 700; }
+  .sum.ok { color: #22E2A0; } .sum.bad { color: #F0A947; }
+  .row { display: flex; gap: 10px; padding: 7px 0; border-top: 1px solid rgba(255,255,255,.09); }
+  .row b { flex: none; width: 54px; } .pass b { color: #22E2A0; } .fail b { color: #F0A947; }
+  .row small { display: block; color: #A8BBC8; }
+</style>
+</head>
+<body>
+<h1>Engine tests</h1>
+<p>Checks that the progress rules in <code>js/state.js</code> behave as documented in HANDOFF.md &sect;6.
+A port is only done when every line below passes. Open this page from a static server
+(<code>python -m http.server</code>) or directly from disk.</p>
+<div class="sum" id="sum"></div>
+<div id="out"></div>
+
+<script src="../js/state.js"></script>
+<script>
+(function () {
+  "use strict";
+  var S = window.SomosState;
+  var out = document.getElementById("out");
+  var passed = 0, failed = 0;
+
+  function eq(actual, expected, label) {
+    if (actual !== expected) throw new Error((label || "value") + ": expected " + expected + ", got " + actual);
+  }
+  function test(name, fn) {
+    try { fn(); passed++; row(true, name); }
+    catch (e) { failed++; row(false, name, e.message); }
+  }
+  function row(ok, name, msg) {
+    var d = document.createElement("div");
+    d.className = "row " + (ok ? "pass" : "fail");
+    d.innerHTML = "<b>" + (ok ? "PASS" : "FAIL") + "</b><div>" + name + (msg ? "<small>" + msg + "</small>" : "") + "</div>";
+    out.appendChild(d);
+  }
+  function ids(track) { return S.trackItems(track).map(function (i) { return i.id; }); }
+  function check(list, on) { S.update(function (d) { list.forEach(function (id) { d.items[id] = on; }); }, { silent: true }); }
+  var toasts = [];
+  window.SomosToast = function (title) { toasts.push(title); };
+
+  test("Example mode reproduces the reference numbers (38 / 100,100,100 / 20,0,25 / 15)", function () {
+    S.start("example");
+    eq(S.overall, 38, "overall");
+    eq(S.pct("ai-discovery"), 100, "discovery"); eq(S.pct("compare"), 100, "compare"); eq(S.pct("goal"), 100, "goal");
+    eq(S.pct("learn"), 20, "learn"); eq(S.pct("build"), 0, "build"); eq(S.pct("connect"), 25, "connect");
+    eq(S.pct("journey"), 15, "journey");
+    eq(S.pct("prepare"), 0, "prepare"); eq(S.pct("practice"), 0, "practice"); eq(S.pct("apply"), 0, "apply");
+  });
+
+  test("Live demo starts at 0% everywhere; nothing is earned by visiting", function () {
+    S.start("demo");
+    eq(S.overall, 0, "overall");
+    S.STAGE_KEYS.forEach(function (k) { eq(S.pct(k), 0, k); });
+    eq(S.pct("journey"), 0, "journey");
+  });
+
+  test("Discovery: each of the 5 answers is worth 20%", function () {
+    S.start("demo");
+    var a = ["background", "experience"], steps = 0;
+    S.update(function (d) { d.discovery.answers.background = "x"; }, { silent: true }); eq(S.pct("ai-discovery"), 20, "1 answer");
+    S.update(function (d) { d.discovery.answers.experience = "x"; }, { silent: true }); eq(S.pct("ai-discovery"), 40, "2 answers");
+    S.update(function (d) { d.discovery.answers.enjoys = ["x"]; d.discovery.answers.coding = ["x"]; d.discovery.answers.priorities = ["x"]; }, { silent: true });
+    eq(S.pct("ai-discovery"), 100, "5 answers");
+  });
+
+  test("Compare: 2 decisions = 100%, capped (a 3rd doesn't exceed it)", function () {
+    S.start("demo");
+    S.update(function (d) { d.compare.decisions = 1; }, { silent: true }); eq(S.pct("compare"), 50, "1 decision");
+    S.update(function (d) { d.compare.decisions = 2; }, { silent: true }); eq(S.pct("compare"), 100, "2 decisions");
+    S.update(function (d) { d.compare.decisions = 5; }, { silent: true }); eq(S.pct("compare"), 100, "capped");
+  });
+
+  test("Goal is 0 until explicitly confirmed (exploring is not committing)", function () {
+    S.start("demo");
+    S.update(function (d) { d.compare.decisions = 3; d.compare.primary = "tpm"; }, { silent: true });
+    eq(S.pct("goal"), 0, "goal before confirm");
+    S.update(function (d) { d.compare.goalConfirmed = true; }, { silent: true });
+    eq(S.pct("goal"), 100, "goal after confirm");
+  });
+
+  test("Learn / Build / Connect = checked items / items in that track", function () {
+    S.start("demo");
+    eq(ids("learn").length, 5, "learn count"); eq(ids("build").length, 3, "build count"); eq(ids("connect").length, 4, "connect count");
+    check([ids("learn")[0]], true); eq(S.pct("learn"), 20, "1 of 5");
+    check(ids("build").slice(0, 1), true); eq(S.pct("build"), 33, "1 of 3");
+    check(ids("connect"), true); eq(S.pct("connect"), 100, "4 of 4");
+  });
+
+  test("My Career Journey is the AVERAGE of the tracks, not the sum", function () {
+    S.start("demo");
+    check(ids("learn"), true);               // learn 100, build 0, connect 0
+    eq(S.pct("learn"), 100, "learn"); eq(S.pct("journey"), 33, "journey must be 33 (100,0,0), never 100");
+    check(ids("build").concat(ids("connect")), true);
+    eq(S.pct("journey"), 100, "all tracks done");
+  });
+
+  test("Prepare = 4 real actions (resume downloaded, LinkedIn copied, achievement added, brand item)", function () {
+    S.start("demo");
+    S.update(function (d) { d.prepare.resumeDownloaded = true; }, { silent: true }); eq(S.pct("prepare"), 25, "1/4");
+    S.update(function (d) { d.prepare.copied.push("headline"); }, { silent: true }); eq(S.pct("prepare"), 50, "2/4");
+    S.update(function (d) { d.prepare.added.push("bullet"); }, { silent: true }); eq(S.pct("prepare"), 75, "3/4");
+    S.update(function (d) { d.prepare.brand.github = true; }, { silent: true }); eq(S.pct("prepare"), 100, "4/4");
+  });
+
+  test("Practice = (questions rehearsed + a path chosen) / 5", function () {
+    S.start("demo");
+    S.update(function (d) { d.practice.rehearsed = [true, true, false, false]; }, { silent: true }); eq(S.pct("practice"), 40, "2/5");
+    S.update(function (d) { d.practice.path = "ai"; }, { silent: true }); eq(S.pct("practice"), 60, "3/5");
+    S.update(function (d) { d.practice.rehearsed = [true, true, true, true]; }, { silent: true }); eq(S.pct("practice"), 100, "5/5");
+  });
+
+  test("Apply = 3 actions (start date saved, board opened, applied)", function () {
+    S.start("demo");
+    S.update(function (d) { d.apply.boardsOpened.push("LinkedIn Jobs"); }, { silent: true }); eq(S.pct("apply"), 33, "1/3");
+    S.update(function (d) { d.apply.startDate = "2030-01-07"; d.apply.applied = true; }, { silent: true }); eq(S.pct("apply"), 100, "3/3");
+  });
+
+  test("Overall = average of the 9 stages", function () {
+    S.start("demo");
+    check(ids("learn"), true);               // learn 100 -> 100/9 = 11
+    eq(S.overall, 11, "one finished stage of nine");
+  });
+
+  test("A milestone fires exactly once, when a stage first reaches 100%", function () {
+    S.start("demo"); toasts.length = 0;
+    S.update(function (d) { d.compare.goalConfirmed = true; });          // goal -> 100: fires
+    eq(toasts.length, 1, "first time");
+    S.update(function (d) { d.compare.goalConfirmed = true; });          // still 100: must not repeat
+    eq(toasts.length, 1, "no repeat");
+  });
+
+  test("Restart returns a mode to its starting state", function () {
+    S.start("demo"); check(ids("learn"), true); eq(S.overall, 11, "changed");
+    S.restart(); eq(S.overall, 0, "after restart"); eq(S.mode, "demo", "mode kept");
+  });
+
+  var s = document.getElementById("sum");
+  s.className = "sum " + (failed ? "bad" : "ok");
+  s.textContent = failed ? failed + " failing, " + passed + " passing" : "All " + passed + " tests passing";
+  S.start("example"); // leave the session as a normal example run
+  document.title = (failed ? "FAIL " : "OK ") + document.title;
+})();
+</script>
+</body>
+</html>

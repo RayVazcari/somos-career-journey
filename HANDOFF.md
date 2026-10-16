@@ -102,3 +102,16 @@ Compare / Goal **100%**, Learn **20%**, Build **0%**, Connect **25%**, My Career
 Placeholder nav links show a toast; Glassdoor and Wellfound link to their job-search home pages;
 `role="heading"` is applied by script (`patchHeadings`), which should become real `<h2>`/`<h3>` in a rebuild;
 `sessionStorage` means refresh keeps progress but a closed tab loses it; no analytics.
+
+## 11. Proving the port is as good as the prototype
+
+Don't take anyone's word for it, including this document's. Run these:
+
+| Check | How | Pass means |
+|---|---|---|
+| Engine behaviour | open `checks/tests.html` | all 13 lines PASS (includes the 38/20/0/25/15 example) |
+| Accessibility + layout | paste `checks/audit.js` in the console; run `somosAudit()` (desktop) and `somosAudit({touch:true})` at 375px | zero problems on every page |
+| Looks right | compare against `docs/screens/*.jpg` (8 desktop screens + 2 phone) | same layout, shared progress card top-right, journey strip top-left |
+| Motion | click a stage on the Map | the mini-map pops up, flies and shrinks into the next page's strip, then the page rises in |
+
+`CLAUDE.md` repeats this as a checklist so an AI assistant working in the repo sees it automatically.
